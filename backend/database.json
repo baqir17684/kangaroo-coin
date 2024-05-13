@@ -1,0 +1,172 @@
+{
+  "admins": {
+    "zoe@gmail.com": {
+      "name": "Zoe B",
+      "password": "123456"
+    },
+    "zoe1@gmail.com": {
+      "name": "Zoe B1",
+      "password": "123456",
+      "store": {
+        "email": "zoe1@gmail.com",
+        "userName": "Zoe B1",
+        "presentations": [
+          {
+            "presentationId": "presentation1",
+            "name": "sadsa",
+            "description": "dsa",
+            "slides": [
+              {
+                "slideId": 1,
+                "content": "title text",
+                "elements": [
+                  {
+                    "type": "text",
+                    "content": "title text"
+                  },
+                  {
+                    "type": "image",
+                    "src": "image-url.jpg",
+                    "alt": "image description"
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "presentationId": "presentation2",
+            "name": "sad",
+            "description": "dsada",
+            "slides": [
+              {
+                "slideId": 1,
+                "content": "title text",
+                "elements": [
+                  {
+                    "type": "text",
+                    "content": "title text"
+                  },
+                  {
+                    "type": "image",
+                    "src": "image-url.jpg",
+                    "alt": "image description"
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "presentationId": "presentation3",
+            "name": "dasda",
+            "description": "asddsad",
+            "slides": [
+              {
+                "slideId": 1,
+                "content": "title text",
+                "elements": [
+                  {
+                    "type": "text",
+                    "content": "title text"
+                  },
+                  {
+                    "type": "image",
+                    "src": "image-url.jpg",
+                    "alt": "image description"
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "presentationId": "presentation4",
+            "name": "dsadsadas",
+            "description": "asdsadasdas",
+            "slides": [
+              {
+                "slideId": 1,
+                "content": "title text",
+                "elements": [
+                  {
+                    "type": "text",
+                    "content": "title text"
+                  },
+                  {
+                    "type": "image",
+                    "src": "image-url.jpg",
+                    "alt": "image description"
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "presentationId": "presentation5",
+            "name": "dsadsad",
+            "description": "asdasdas",
+            "slides": [
+              {
+                "slideId": 1,
+                "content": "title text",
+                "elements": [
+                  {
+                    "type": "text",
+                    "content": "title text"
+                  },
+                  {
+                    "type": "image",
+                    "src": "image-url.jpg",
+                    "alt": "image description"
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "presentationId": "presentation6",
+            "name": "dsadsadasd",
+            "description": "sadsadsadas",
+            "slides": [
+              {
+                "slideId": 1,
+                "content": "title text",
+                "elements": [
+                  {
+                    "type": "text",
+                    "content": "title text"
+                  },
+                  {
+                    "type": "image",
+                    "src": "image-url.jpg",
+                    "alt": "image description"
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "presentationId": "presentation7",
+            "name": "knknD",
+            "description": "ddnkd",
+            "slides": [
+              {
+                "slideId": 1,
+                "content": "title text",
+                "elements": [
+                  {
+                    "type": "text",
+                    "content": "title text"
+                  },
+                  {
+                    "type": "image",
+                    "src": "image-url.jpg",
+                    "alt": "image description"
+                  }
+                ]
+              }
+            ]
+          }
+        ]
+      }
+    }
+  }
+}
