@@ -51,23 +51,16 @@ function PresentationEditor () {
   }, [presentation]);
 
   const [openTextModal, setOpenTextModal] = useState(false);
-  const [textValue, setTextValue] = useState('');
-  const [textSize, setTextSize] = useState('1em');
-  const [textColor, setTextColor] = useState('#000000');
-
   const handleOpenTextModal = () => setOpenTextModal(true);
   const handleCloseTextModal = () => setOpenTextModal(false);
-
-  const handleTextChange = (event) => setTextValue(event.target.value);
-  const handleTextSizeChange = (event) => setTextSize(event.target.value);
-  const handleTextColorChange = (event) => setTextColor(event.target.value);
-
-  const addTextToSlide = () => {
+  const addTextToSlide = (text, textSize, textColor, textWidth, textHeight) => {
     const textElement = {
       type: 'text',
-      content: textValue,
+      content: text,
       size: textSize,
       color: textColor,
+      width: textWidth,
+      height: textHeight,
     };
     setPresentation(presentation => {
       const slides = [...presentation.slides];
@@ -177,7 +170,7 @@ function PresentationEditor () {
             </ListItemIcon>
             <ListItemText primary="Text" />
           </ListItemButton>
-          <NewTextModal open={openTextModal} onClose={handleCloseTextModal} onTextChange={handleTextChange} onTextSizeChange={handleTextSizeChange} onTextColorChange={handleTextColorChange} onAddText={addTextToSlide} />
+          <NewTextModal open={openTextModal} onClose={handleCloseTextModal} onAddText={addTextToSlide} />
           {/* img */}
           <ListItemButton onClick={addImage}>
             <ListItemIcon>

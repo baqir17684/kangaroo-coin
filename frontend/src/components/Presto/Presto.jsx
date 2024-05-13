@@ -13,7 +13,7 @@ import Typography from '@mui/material/Typography';
 import AppBar from '@mui/material/AppBar';
 import Toolbar from '@mui/material/Toolbar';
 import IconButton from '@mui/material/IconButton';
-import AccountBoxOutlined from '@mui/icons-material/AccountBoxOutlined';
+import PersonIcon from '@mui/icons-material/Person';
 import PowerSettingsNewIcon from '@mui/icons-material/PowerSettingsNew';
 import CircleIcon from '@mui/icons-material/Circle';
 import NewPresentationModal from './components/NewPresentationModal';
@@ -172,7 +172,7 @@ export default function Presto () {
                         {userInfo}
                       </Typography>
                     </CardContent>
-                    <AccountBoxOutlined sx={{ fontSize: 100, color: colors.grey[300] }} />
+                    <PersonIcon sx={{ fontSize: 100, bgcolor: colors.blue[100], color: colors.blue[600] }} />
                   </Box>
                   <CardActions>
                     <Button size="small" onClick={handleOpenModal}>Upgrade</Button>
@@ -187,7 +187,7 @@ export default function Presto () {
                             {userInfo}
                           </Typography>
                         </CardContent>
-                        <AccountBoxOutlined sx={{ fontSize: 100, color: colors.grey[300] }} />
+                        <PersonIcon sx={{ fontSize: 100, bgcolor: colors.blue[100], color: colors.blue[600] }} />
                       </Box>
                       <CardActions>
                         <Button size="small" onClick={handleOpenModal}>Upgrade</Button>
@@ -243,7 +243,7 @@ export default function Presto () {
                               data-testid="card-media"
                               component="img"
                               height="140"
-                              image={presentation.thumbnail || 'https://source.unsplash.com/random?wallpapers'}
+                              image={presentation.thumbnail || ('https://source.unsplash.com/random?wallpapers&sig=' + `${presentation.presentationId}`)}
                               alt={presentation.description}
                               sx={{ flex: '1 0 auto', mb: 1 }}
                             />
