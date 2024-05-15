@@ -2,7 +2,7 @@ import * as React from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import apiCallGet from '../apiCall/apiCallGet';
 import apiCallPut from '../apiCall/apiCallPut';
-import { Drawer, Box, List, ListItemIcon, ListItemText, Typography, Divider, Grid, Modal, TextField, Button } from '@mui/material';
+import { Drawer, Box, List, ListItemIcon, ListItemText, Typography, Divider, Grid } from '@mui/material';
 import Paper from '@mui/material/Paper';
 import TextFieldsIcon from '@mui/icons-material/TextFields';
 import ListItemButton from '@mui/material/ListItemButton';
@@ -19,13 +19,11 @@ import KeyboardArrowUpIcon from '@mui/icons-material/KeyboardArrowUp';
 import Tooltip from '@mui/material/Tooltip';
 import html2canvas from 'html2canvas';
 import { useState, useEffect } from 'react';
-import NewCodeModal from './components/NewCodeModal';
-import NewImageModal from './components/NewImageModal';
 import NewTextModal from './components/NewTextModal';
+// import NewCodeModal from './components/NewCodeModal';
+import NewImageModal from './components/NewImageModal';
 import NewVideoModal from './components/NewVideoModal';
 
-const addImage = () => console.log('');
-const addVideo = () => console.log('');
 const addCode = () => console.log('');
 
 function PresentationEditor () {
@@ -50,17 +48,18 @@ function PresentationEditor () {
       })
   }, [presentation]);
 
+  // text modal
   const [openTextModal, setOpenTextModal] = useState(false);
   const handleOpenTextModal = () => setOpenTextModal(true);
   const handleCloseTextModal = () => setOpenTextModal(false);
-  const addTextToSlide = (text, textSize, textColor, textWidth, textHeight) => {
+  const addTextToSlide = (text, textWidth, textHeight, textColor, textFontSize) => {
     const textElement = {
       type: 'text',
       content: text,
-      size: textSize,
       color: textColor,
       width: textWidth,
       height: textHeight,
+      fontSize: textFontSize,
     };
     setPresentation(presentation => {
       const slides = [...presentation.slides];
@@ -68,6 +67,46 @@ function PresentationEditor () {
       return { ...presentation, slides };
     });
     handleCloseTextModal();
+  };
+
+  // image modal
+  const [openImageModal, setOpenImageModal] = useState(false);
+  const handleOpenImageModal = () => setOpenImageModal(true);
+  const handleCloseImageModal = () => setOpenImageModal(false);
+  const addImageToSlide = (imageWidth, imageHeight, imageURL, imageDesciption) => {
+    const imageElement = {
+      type: 'image',
+      url: imageURL,
+      description: imageDesciption,
+      width: imageWidth,
+      height: imageHeight,
+    };
+    setPresentation(presentation => {
+      const slides = [...presentation.slides];
+      currentSlide.elements.push(imageElement);
+      return { ...presentation, slides };
+    });
+    handleCloseImageModal();
+  };
+
+  // video modal
+  const [openVideoModal, setOpenVideoModal] = useState(false);
+  const handleOpenVideoModal = () => setOpenVideoModal(true);
+  const handleCloseVideoModal = () => setOpenVideoModal(false);
+  const addVideoToSlide = (videoWidth, videoHeight, videoURL, isAutoPlay) => {
+    const videoElement = {
+      type: 'video',
+      url: videoURL,
+      width: videoWidth,
+      height: videoHeight,
+      autoPlay: isAutoPlay,
+    };
+    setPresentation(presentation => {
+      const slides = [...presentation.slides];
+      currentSlide.elements.push(videoElement);
+      return { ...presentation, slides };
+    });
+    handleCloseVideoModal();
   };
 
   const deleteSomething = () => {
@@ -172,20 +211,22 @@ function PresentationEditor () {
           </ListItemButton>
           <NewTextModal open={openTextModal} onClose={handleCloseTextModal} onAddText={addTextToSlide} />
           {/* img */}
-          <ListItemButton onClick={addImage}>
+          <ListItemButton onClick={handleOpenImageModal}>
             <ListItemIcon>
               <ImageIcon />
             </ListItemIcon>
             <ListItemText primary="Image" />
           </ListItemButton>
+          <NewImageModal open={openImageModal} onClose={handleCloseImageModal} onAddImage={addImageToSlide} />
 
           {/* video */}
-          <ListItemButton onClick={addVideo}>
+          <ListItemButton onClick={handleOpenVideoModal}>
             <ListItemIcon>
               <OndemandVideoIcon />
             </ListItemIcon>
             <ListItemText primary="Video" />
           </ListItemButton>
+          <NewVideoModal open={openVideoModal} onClose={handleCloseVideoModal} onAddVideo={addVideoToSlide} />
 
           {/* code */}
           <ListItemButton onClick={addCode}>
