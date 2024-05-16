@@ -36,7 +36,7 @@ function NewTextModal ({ open, onClose, onAddText }) {
           sx={{ m: 1, width: '25ch' }}
           InputProps={
             {
-              endAdornment: <InputAdornment position="end">px</InputAdornment>,
+              endAdornment: <InputAdornment position="end">%</InputAdornment>,
             }
           }
         />
@@ -52,7 +52,7 @@ function NewTextModal ({ open, onClose, onAddText }) {
           sx={{ m: 1, width: '25ch' }}
           InputProps={
             {
-              endAdornment: <InputAdornment position="end">px</InputAdornment>,
+              endAdornment: <InputAdornment position="end">%</InputAdornment>,
             }
           }
         />
