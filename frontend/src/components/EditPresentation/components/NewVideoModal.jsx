@@ -5,13 +5,13 @@ const Transition = React.forwardRef(function Transition (props, ref) {
   return <Slide direction="up" ref={ref} {...props} />;
 });
 
-function NewTextModal ({ open, onClose, onAddText }) {
-  const [width, setWidth] = useState(100);
-  const [height, setHeight] = useState(100);
+function NewTextModal ({ open, onClose, onAddVideo }) {
+  const [width, setWidth] = useState(40);
+  const [height, setHeight] = useState(40);
   const [videoURL, setVideoURL] = useState('');
   const [isAutoPlay, setIsAutoPlay] = useState(false);
   const handleCreate = () => {
-    onAddText(width, height, videoURL, isAutoPlay);
+    onAddVideo(width, height, videoURL, isAutoPlay);
     onClose();
   };
 
@@ -34,7 +34,7 @@ function NewTextModal ({ open, onClose, onAddText }) {
           sx={{ m: 1, width: '25ch' }}
           InputProps={
             {
-              endAdornment: <InputAdornment position="end">px</InputAdornment>,
+              endAdornment: <InputAdornment position="end">%</InputAdornment>,
             }
           }
         />
@@ -50,7 +50,7 @@ function NewTextModal ({ open, onClose, onAddText }) {
           sx={{ m: 1, width: '25ch' }}
           InputProps={
             {
-              endAdornment: <InputAdornment position="end">px</InputAdornment>,
+              endAdornment: <InputAdornment position="end">%</InputAdornment>,
             }
           }
         />

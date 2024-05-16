@@ -1,19 +1,24 @@
 import React, { useState } from 'react';
 import { InputAdornment, Button, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle, TextField, Slide } from '@mui/material';
+import ImageUpload from './ImageUpload';
 
 const Transition = React.forwardRef(function Transition (props, ref) {
   return <Slide direction="up" ref={ref} {...props} />;
 });
 
 function NewTextModal ({ open, onClose, onAddImage }) {
-  const [width, setWidth] = useState(100);
-  const [height, setHeight] = useState(100);
+  const [width, setWidth] = useState(30);
+  const [height, setHeight] = useState(30);
   const [imageURL, setImageURL] = useState('');
   const [imageDescription, setImageDescription] = useState('');
 
   const handleCreate = () => {
     onAddImage(width, height, imageURL, imageDescription);
     onClose();
+  };
+
+  const handleUpload = (imgURL) => {
+    setImageURL(imgURL);
   };
 
   return (
@@ -35,7 +40,7 @@ function NewTextModal ({ open, onClose, onAddImage }) {
           sx={{ m: 1, width: '25ch' }}
           InputProps={
             {
-              endAdornment: <InputAdornment position="end">px</InputAdornment>,
+              endAdornment: <InputAdornment position="end">%</InputAdornment>,
             }
           }
         />
@@ -51,11 +56,11 @@ function NewTextModal ({ open, onClose, onAddImage }) {
           sx={{ m: 1, width: '25ch' }}
           InputProps={
             {
-              endAdornment: <InputAdornment position="end">px</InputAdornment>,
+              endAdornment: <InputAdornment position="end">%</InputAdornment>,
             }
           }
         />
-        <TextField
+        {/* <TextField
           margin="dense"
           label="image URL or base64 string"
           type="text"
@@ -65,7 +70,8 @@ function NewTextModal ({ open, onClose, onAddImage }) {
           onChange={e => setImageURL(e.target.value)}
           multilines
           sx={{ m: 1, width: '52ch', mb: 3 }}
-        />
+        /> */}
+        <ImageUpload handleUpload={handleUpload}/>
         <TextField
           margin="dense"
           label="image description"

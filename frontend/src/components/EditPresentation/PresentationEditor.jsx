@@ -54,6 +54,7 @@ function PresentationEditor () {
   const handleCloseTextModal = () => setOpenTextModal(false);
   const addTextToSlide = (text, textWidth, textHeight, textColor, textFontSize) => {
     const textElement = {
+      eleID: currentSlide.elements.length,
       type: 'text',
       content: text,
       color: textColor,
@@ -63,7 +64,11 @@ function PresentationEditor () {
     };
     setPresentation(presentation => {
       const slides = [...presentation.slides];
+      console.log(slides);
+      console.log(currentSlide);
       currentSlide.elements.push(textElement);
+      console.log(slides);
+      console.log(currentSlide);
       return { ...presentation, slides };
     });
     handleCloseTextModal();
@@ -75,6 +80,7 @@ function PresentationEditor () {
   const handleCloseImageModal = () => setOpenImageModal(false);
   const addImageToSlide = (imageWidth, imageHeight, imageURL, imageDesciption) => {
     const imageElement = {
+      eleID: currentSlide.elements.length,
       type: 'image',
       url: imageURL,
       description: imageDesciption,
@@ -95,6 +101,7 @@ function PresentationEditor () {
   const handleCloseVideoModal = () => setOpenVideoModal(false);
   const addVideoToSlide = (videoWidth, videoHeight, videoURL, isAutoPlay) => {
     const videoElement = {
+      eleID: currentSlide.elements.length,
       type: 'video',
       url: videoURL,
       width: videoWidth,

@@ -9,8 +9,8 @@ function NewTextModal ({ open, onClose, onAddText }) {
   const [text, setText] = useState('');
   const [textColor, setTextColor] = useState('#000000');
   const [textFontSize, setTextFontSize] = useState(1);
-  const [width, setWidth] = useState(100);
-  const [height, setHeight] = useState(100);
+  const [width, setWidth] = useState(20);
+  const [height, setHeight] = useState(20);
 
   const handleCreate = () => {
     onAddText(text, width, height, textColor, textFontSize);
@@ -36,7 +36,7 @@ function NewTextModal ({ open, onClose, onAddText }) {
           sx={{ m: 1, width: '25ch' }}
           InputProps={
             {
-              endAdornment: <InputAdornment position="end">px</InputAdornment>,
+              endAdornment: <InputAdornment position="end">%</InputAdornment>,
             }
           }
         />
@@ -52,7 +52,7 @@ function NewTextModal ({ open, onClose, onAddText }) {
           sx={{ m: 1, width: '25ch' }}
           InputProps={
             {
-              endAdornment: <InputAdornment position="end">px</InputAdornment>,
+              endAdornment: <InputAdornment position="end">%</InputAdornment>,
             }
           }
         />
