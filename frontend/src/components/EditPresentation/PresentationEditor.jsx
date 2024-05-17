@@ -18,11 +18,12 @@ import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown';
 import KeyboardArrowUpIcon from '@mui/icons-material/KeyboardArrowUp';
 import Tooltip from '@mui/material/Tooltip';
 import html2canvas from 'html2canvas';
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import NewTextModal from './components/NewTextModal';
 // import NewCodeModal from './components/NewCodeModal';
 import NewImageModal from './components/NewImageModal';
 import NewVideoModal from './components/NewVideoModal';
+import DraggableElement from './components/DraggableElement';
 
 const addCode = () => console.log('');
 
@@ -32,6 +33,7 @@ function PresentationEditor () {
   const navigate = useNavigate();
   const [presentation, setPresentation] = useState('');
   const [currentSlide, setSlide] = useState('');
+  const containerRef = useRef(null);
   useEffect(() => {
     apiCallGet('store', token)
       .then(body => {
@@ -62,15 +64,16 @@ function PresentationEditor () {
       height: textHeight,
       fontSize: textFontSize,
     };
-    setPresentation(presentation => {
-      const slides = [...presentation.slides];
-      console.log(slides);
-      console.log(currentSlide);
-      currentSlide.elements.push(textElement);
-      console.log(slides);
-      console.log(currentSlide);
-      return { ...presentation, slides };
-    });
+    const updatedSlide = { ...currentSlide, elements: [...currentSlide.elements, textElement] };
+    const updatedSlides = presentation.slides.map(slide =>
+      slide.slideId === currentSlide.slideId ? updatedSlide : slide
+    );
+    setPresentation(presentation => ({
+      ...presentation,
+      slides: updatedSlides,
+    }));
+    setSlide(updatedSlide);
+
     handleCloseTextModal();
   };
 
@@ -87,11 +90,16 @@ function PresentationEditor () {
       width: imageWidth,
       height: imageHeight,
     };
-    setPresentation(presentation => {
-      const slides = [...presentation.slides];
-      currentSlide.elements.push(imageElement);
-      return { ...presentation, slides };
-    });
+    const updatedSlide = { ...currentSlide, elements: [...currentSlide.elements, imageElement] };
+    const updatedSlides = presentation.slides.map(slide =>
+      slide.slideId === currentSlide.slideId ? updatedSlide : slide
+    );
+    setPresentation(presentation => ({
+      ...presentation,
+      slides: updatedSlides,
+    }));
+    setSlide(updatedSlide);
+
     handleCloseImageModal();
   };
 
@@ -108,11 +116,16 @@ function PresentationEditor () {
       height: videoHeight,
       autoPlay: isAutoPlay,
     };
-    setPresentation(presentation => {
-      const slides = [...presentation.slides];
-      currentSlide.elements.push(videoElement);
-      return { ...presentation, slides };
-    });
+    const updatedSlide = { ...currentSlide, elements: [...currentSlide.elements, videoElement] };
+    const updatedSlides = presentation.slides.map(slide =>
+      slide.slideId === currentSlide.slideId ? updatedSlide : slide
+    );
+    setPresentation(presentation => ({
+      ...presentation,
+      slides: updatedSlides,
+    }));
+    setSlide(updatedSlide);
+
     handleCloseVideoModal();
   };
 
@@ -194,6 +207,21 @@ function PresentationEditor () {
         return presentation;
       }
     });
+  };
+
+  const handlePositionUpgrade = (eleID, position) => {
+    const updatedElements = currentSlide.elements.map(element =>
+      element.eleID === eleID ? { ...element, xPosition: position.x, yPosition: position.y } : element
+    )
+    const updatedSlide = { ...currentSlide, elements: updatedElements };
+    const updatedSlides = presentation.slides.map(slide =>
+      slide.slideId === currentSlide.slideId ? updatedSlide : slide
+    );
+    setPresentation(presentation => ({
+      ...presentation,
+      slides: updatedSlides,
+    }));
+    setSlide(updatedSlide);
   };
 
   return (
@@ -301,6 +329,7 @@ function PresentationEditor () {
               textAlign: 'center',
               px: 2,
               py: 1,
+              zIndex: 100,
             }}
             >
               {currentSlide.slideId}
@@ -310,11 +339,12 @@ function PresentationEditor () {
             sx={{
               position: 'absolute',
               top: 0,
-              right: 0,
+              right: -40,
               height: '100%',
               display: 'flex',
               flexDirection: 'column',
               bgcolor: 'secondary.main',
+              zIndex: 100
             }}
           >
             <Tooltip title="delete current slide" placement="top" arrow>
@@ -348,15 +378,22 @@ function PresentationEditor () {
             )}
           </Box>
 
-          <Paper sx={{
-            flexGrow: 1,
-            display: 'flex',
-            justifyContent: 'center',
-            alignItems: 'center',
-            bgcolor: 'black',
-            color: 'white',
-          }}>
-            <Typography variant="h3">{`Slide ${currentSlide.slideId}`}</Typography>
+          <Paper
+            ref = {containerRef}
+            sx={{
+              flexGrow: 1,
+              display: 'flex',
+              justifyContent: 'center',
+              alignItems: 'center',
+              bgcolor: 'black',
+              color: 'white',
+              position: 'relative',
+              zIndex: 1,
+            }}
+          >
+            {currentSlide.elements && currentSlide.elements.map(element => (
+              <DraggableElement key={element.eleID} element={element} handlePositionUpgrade={handlePositionUpgrade} containerRef={containerRef}/>
+            ))}
           </Paper>
         </Grid>
       </Grid>
