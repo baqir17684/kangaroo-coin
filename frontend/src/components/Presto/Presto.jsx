@@ -118,17 +118,7 @@ export default function Presto () {
         {
           slideId: 1,
           content: 'title text',
-          elements: [
-            {
-              type: 'text',
-              content: 'title text'
-            },
-            {
-              type: 'image',
-              src: 'image-url.jpg',
-              alt: 'image description'
-            }
-          ]
+          elements: []
         }
       ]
     };

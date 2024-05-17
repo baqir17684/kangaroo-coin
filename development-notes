@@ -99,3 +99,7 @@ function LoginPage() {
 
 export default LoginPage;
 
+
+5.presto中，为了使得右侧presentation缩略图展示栏，每行的grid子项数根据grid container的宽度变化而不是根据屏幕宽度，
+使用useRef引用container元素，同时采用ResizeObserver监视useRef.current的变化，变化时触发回调函数handleResize，改变state量cols，进而控制子项。
+
