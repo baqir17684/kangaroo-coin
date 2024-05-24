@@ -50,7 +50,6 @@ function PresentationEditor () {
         apiCallPut('store', token, body.store);
       })
   }, [presentation]);
-
   const [{ isOver }, drop] = useDrop({
     accept: 'Box',
     drop: (item, monitor) => {
@@ -251,7 +250,6 @@ function PresentationEditor () {
     drop(node);
     paperRef.current = node;
   });
-
   return (
     <Box display="flex" height="100vh">
       <Drawer

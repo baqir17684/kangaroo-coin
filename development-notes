@@ -1,6 +1,9 @@
+<<<<<<< HEAD
 注：You are able to use and install any library that is available to install via npm install. 
 You MUST commit package.json changes.
 
+=======
+>>>>>>> 4bbec80909b115853f004ebc2c3613fd757277b2
 1. 路由
 2. 响应式设计 {
     媒体查询：<600(手机), 600-900(平板), 大于901(桌面)
@@ -10,6 +13,7 @@ You MUST commit package.json changes.
 4. 可访问性  Axe/WAVE
 5. 代码esLint
 
+<<<<<<< HEAD
 1. 项目规划和设计
 需求分析：明确应用的功能需求，如创建幻灯片、编辑内容、设计模板、分享和导出等功能。
 设计原型：使用设计工具（尽管不在你的工具列表中，但推荐如Figma或Sketch）来设计应用的UI和UX。考虑创建一个设计系统，以便在Material-UI组件基础上进行定制。
@@ -39,6 +43,8 @@ You MUST commit package.json changes.
 
 
 
+=======
+>>>>>>> 4bbec80909b115853f004ebc2c3613fd757277b2
 hint:
 1.字体："Heiti TC"
 2.颜色：人体三感知器官，对应蓝绿红，蓝色是最安全的颜色，绿色是最舒适的颜色，红色是最激烈的颜色，构成RGB三原色，对应xyz三个值
@@ -76,7 +82,10 @@ function turnHSLToRGB(h, s, l) {
   }
   return [Math.round((r + m) * 255), Math.round((g + m) * 255), Math.round((b + m) * 255)];
 } 
+<<<<<<< HEAD
 3.注意注明使用的template
+=======
+>>>>>>> 4bbec80909b115853f004ebc2c3613fd757277b2
 
 
 4.路由：import React from 'react';
@@ -103,6 +112,7 @@ export default LoginPage;
 5.presto中，为了使得右侧presentation缩略图展示栏，每行的grid子项数根据grid container的宽度变化而不是根据屏幕宽度，
 使用useRef引用container元素，同时采用ResizeObserver监视useRef.current的变化，变化时触发回调函数handleResize，改变state量cols，进而控制子项。
 
+<<<<<<< HEAD
 6.使用js原生的触发器控制画布上元素的移动不太流畅，尝试使用react dnd, 部署代码=>useDrop左边第一个参数不能为空，不然会引起无限循环报错。
 const delta = monitor.getDifferenceFromInitialOffset();返回的是px，必须与paper盒子的宽高处理得到百分比，要得到百分比需要引用paper结点
 由于已经有个来自useDrop的ref，所以需要引入useCallback，将两个ref合并，传递给useDrop的ref，同时将其中一个ref传递给另一个ref，这样就可以在回调函数中使用paperRef.current
@@ -153,3 +163,5 @@ import { useCallback, useRef } from 'react';
     paperRef.current = node; // 将节点存储在 paperRef 中
   }, [drop]);
 ref={combinedRef}
+=======
+>>>>>>> 4bbec80909b115853f004ebc2c3613fd757277b2
