@@ -103,7 +103,12 @@ export default LoginPage;
 5.presto中，为了使得右侧presentation缩略图展示栏，每行的grid子项数根据grid container的宽度变化而不是根据屏幕宽度，
 使用useRef引用container元素，同时采用ResizeObserver监视useRef.current的变化，变化时触发回调函数handleResize，改变state量cols，进而控制子项。
 
-6.使用js原生的触发器控制画布上元素的移动不太流畅，尝试使用react dnd
+6.使用js原生的触发器控制画布上元素的移动不太流畅，尝试使用react dnd, 部署代码=>useDrop左边第一个参数不能为空，不然会引起无限循环报错。
+const delta = monitor.getDifferenceFromInitialOffset();返回的是px，必须与paper盒子的宽高处理得到百分比，要得到百分比需要引用paper结点
+由于已经有个来自useDrop的ref，所以需要引入useCallback，将两个ref合并，传递给useDrop的ref，同时将其中一个ref传递给另一个ref，这样就可以在回调函数中使用paperRef.current
+最后使用  const { width, height } = paperRef.current.getBoundingClientRect();
+        delta.x = delta.x / width * 100;
+        delta.y = delta.y / height * 100;
 
 7.观察者
 export class Game {
