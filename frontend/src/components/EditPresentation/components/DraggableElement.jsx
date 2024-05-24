@@ -1,11 +1,17 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Typography, Box } from '@mui/material';
+import { useDrag } from 'react-dnd';
 
-export default function DraggableElement ({ key, element, handlePositionUpgrade, containerRef }) {
-  const [isDragging, setIsDragging] = useState(false);
+export default function DraggableElement ({ element }) {
   const [position, setPosition] = useState({ x: element.xPosition || 50, y: element.yPosition || 50 });
-  const dragItem = useRef(null);
-  const dragItemPosition = useRef({ x: 0, y: 0 })
+  const eleID = element.eleID;
+  const [{ isDragging }, drag] = useDrag({
+    type: 'Box',
+    item: { eleID, x: position.x, y: position.y },
+    collect: (monitor) => ({
+      isDragging: monitor.isDragging(),
+    }),
+  });
   const commonStyles = {
     position: 'absolute',
     top: `${position.y}` + '%',
@@ -13,71 +19,45 @@ export default function DraggableElement ({ key, element, handlePositionUpgrade,
     transform: 'translate(-50%, -50%)',
     width: `${element.width}%`,
     height: `${element.height}%`,
+    zIndex: 10,
+    fontSize: 25,
+    fontWeight: 'bold',
+    cursor: 'move',
+    opacity: isDragging ? 0.5 : 1,
   };
 
   useEffect(() => {
-    setPosition({ x: element.x || 50, y: element.y || 50 });
+    setPosition({ x: element.xPosition || 50, y: element.yPosition || 50 });
   }, [element]);
-
-  const handleMouseDown = (e) => {
-    setIsDragging(true);
-    dragItem.current = e.target;
-    dragItemPosition.current = { x: e.clientX - position.x, y: e.clientY - position.y };
-  };
-
-  const handleMouseMove = (e) => {
-    if (isDragging) {
-      const newX = e.clientX - dragItemPosition.current.x;
-      const newY = e.clientY - dragItemPosition.current.y;
-      const containerBounds = containerRef.current.getBoundingClientRect();
-      const elementBounds = dragItem.current.getBoundingClientRect();
-
-      const boundedX = Math.max(
-        containerBounds.left,
-        Math.min(newX + containerBounds.left, containerBounds.right - elementBounds.width)
-      ) - containerBounds.left;
-
-      const boundedY = Math.max(
-        containerBounds.top,
-        Math.min(newY + containerBounds.top, containerBounds.bottom - elementBounds.height)
-      ) - containerBounds.top;
-      setPosition({ x: boundedX, y: boundedY });
-    }
-  }
-
-  const handleMouseUp = () => {
-    setIsDragging(false);
-    handlePositionUpgrade(key, position);
-  }
 
   return (
     <Box
-      ref={containerRef}
-      key={key}
+      key={eleID}
+      id="draggable-element"
       style={commonStyles}
-      onMouseDown={handleMouseDown}
-      onMouseMove={handleMouseMove}
-      onMouseUp={handleMouseUp}
+      ref={drag}
+      sx={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }}
     >
       {element.type === 'text' && (
         <Typography
           sx={{
             fontSize: `${element.fontSize}em`,
             color: element.color,
+            width: '100%',
+            height: '100%',
           }}
         >
           {element.content}
         </Typography>
       )}
       {element.type === 'image' && (
-        <img src={element.url} alt={element.description} style={commonStyles} />
+        <img src={element.url} alt={element.description} style={{ width: '100%', height: '100%' }} />
       )}
       {element.type === 'video' && (
         <video
-          key={element.eleID}
           src={element.url}
           autoPlay={element.autoPlay}
-          style={commonStyles}
+          style={{ width: '100%', height: '100%' }}
         />
       )}
     </Box>

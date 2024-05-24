@@ -18,12 +18,13 @@ import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown';
 import KeyboardArrowUpIcon from '@mui/icons-material/KeyboardArrowUp';
 import Tooltip from '@mui/material/Tooltip';
 import html2canvas from 'html2canvas';
-import { useState, useEffect, useRef } from 'react';
+import { useState, useEffect, useRef, useCallback } from 'react';
 import NewTextModal from './components/NewTextModal';
 // import NewCodeModal from './components/NewCodeModal';
 import NewImageModal from './components/NewImageModal';
 import NewVideoModal from './components/NewVideoModal';
 import DraggableElement from './components/DraggableElement';
+import { useDrop } from 'react-dnd';
 
 const addCode = () => console.log('');
 
@@ -33,7 +34,7 @@ function PresentationEditor () {
   const navigate = useNavigate();
   const [presentation, setPresentation] = useState('');
   const [currentSlide, setSlide] = useState('');
-  const containerRef = useRef(null);
+  const paperRef = useRef(null);
   useEffect(() => {
     apiCallGet('store', token)
       .then(body => {
@@ -50,6 +51,23 @@ function PresentationEditor () {
       })
   }, [presentation]);
 
+  const [{ isOver }, drop] = useDrop({
+    accept: 'Box',
+    drop: (item, monitor) => {
+      const delta = monitor.getDifferenceFromInitialOffset();
+      if (paperRef.current) {
+        const { width, height } = paperRef.current.getBoundingClientRect();
+        delta.x = delta.x / width * 100;
+        delta.y = delta.y / height * 100;
+        const x = Math.round(item.x + delta.x);
+        const y = Math.round(item.y + delta.y);
+        handlePositionUpgrade(item.eleID, { x, y });
+      }
+    },
+    collect: monitor => ({
+      isOver: !!monitor.isOver(),
+    }),
+  });
   // text modal
   const [openTextModal, setOpenTextModal] = useState(false);
   const handleOpenTextModal = () => setOpenTextModal(true);
@@ -144,10 +162,12 @@ function PresentationEditor () {
 
   const captureAndSendThumbnail = () => {
     const element = document.getElementById('element-to-capture');
-    html2canvas(element).then(canvas => {
-      const imageData = canvas.toDataURL('image/png');
-      setPresentation(presentation => ({ ...presentation, thumbnail: imageData }));
-    });
+    if (element) {
+      html2canvas(element).then(canvas => {
+        const imageData = canvas.toDataURL('image/png');
+        setPresentation(presentation => ({ ...presentation, thumbnail: imageData }));
+      });
+    }
   };
 
   const deleteSlide = () => {
@@ -222,7 +242,15 @@ function PresentationEditor () {
       slides: updatedSlides,
     }));
     setSlide(updatedSlide);
+    if (isOver) {
+      console.log('Dragging over drop area');
+    }
   };
+
+  const combineRef = useCallback(node => {
+    drop(node);
+    paperRef.current = node;
+  });
 
   return (
     <Box display="flex" height="100vh">
@@ -379,20 +407,20 @@ function PresentationEditor () {
           </Box>
 
           <Paper
-            ref = {containerRef}
+            ref = {combineRef}
             sx={{
               flexGrow: 1,
               display: 'flex',
               justifyContent: 'center',
               alignItems: 'center',
-              bgcolor: 'black',
+              bgcolor: 'white',
               color: 'white',
               position: 'relative',
               zIndex: 1,
             }}
           >
-            {currentSlide.elements && currentSlide.elements.map(element => (
-              <DraggableElement key={element.eleID} element={element} handlePositionUpgrade={handlePositionUpgrade} containerRef={containerRef}/>
+            {currentSlide.elements && currentSlide.elements.map((element) => (
+              <DraggableElement key={element.eleID} element={element} />
             ))}
           </Paper>
         </Grid>

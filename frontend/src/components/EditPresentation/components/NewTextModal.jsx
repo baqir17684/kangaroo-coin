@@ -9,8 +9,8 @@ function NewTextModal ({ open, onClose, onAddText }) {
   const [text, setText] = useState('');
   const [textColor, setTextColor] = useState('#000000');
   const [textFontSize, setTextFontSize] = useState(1);
-  const [width, setWidth] = useState(20);
-  const [height, setHeight] = useState(20);
+  const [width, setWidth] = useState(10);
+  const [height, setHeight] = useState(10);
 
   const handleCreate = () => {
     onAddText(text, width, height, textColor, textFontSize);
@@ -85,7 +85,7 @@ function NewTextModal ({ open, onClose, onAddText }) {
           id="outlined-select-currency"
           select
           label="text color"
-          defaultValue="#FFFFFF"
+          defaultValue="#000000"
           onChange={e => setTextColor(e.target.value)}
           sx={{ m: 1, width: '25ch' }}
         >
