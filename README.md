@@ -1,3 +1,8 @@
+## Requirements
+
+- Node.js v18.19.1
+- npm v10.7.0
+
 0. Introduce
 
 This is an alternative to <slides.com> that is a lean, lightweight spa app.
