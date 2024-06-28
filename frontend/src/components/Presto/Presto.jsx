@@ -86,6 +86,7 @@ export default function Presto () {
   useEffect(() => {
     apiCallGet('store', token)
       .then(body => {
+        console.log(body.store.store.presentations);
         setPresentations(body.store.store.presentations);
         setUserInfo(body.store.store.userName);
       })
@@ -233,7 +234,7 @@ export default function Presto () {
                               data-testid="card-media"
                               component="img"
                               height="140"
-                              image={presentation.thumbnail || ('https://source.unsplash.com/random?wallpapers&sig=' + `${presentation.presentationId}`)}
+                              image={presentation.thumbnail || (`https://picsum.photos/seed/${presentation.presentationId}/600/400`)}
                               alt={presentation.description}
                               sx={{ flex: '1 0 auto', mb: 1 }}
                             />

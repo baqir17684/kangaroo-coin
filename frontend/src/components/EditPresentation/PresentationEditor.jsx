@@ -40,7 +40,6 @@ function PresentationEditor () {
       .then(body => {
         setPresentation(body.store.store.presentations.find(presentation => presentation.presentationId === presentationId));
         setSlide(body.store.store.presentations.find(presentation => presentation.presentationId === presentationId).slides[0]);
-        captureAndSendThumbnail();
       })
   }, []);
   useEffect(() => {
@@ -49,6 +48,13 @@ function PresentationEditor () {
         body.store.store.presentations = body.store.store.presentations.map(presentation0 => presentation0.presentationId === presentation.presentationId ? presentation : presentation0);
         apiCallPut('store', token, body.store);
       })
+  }, [presentation]);
+
+  // capture thumbnail
+  useEffect(() => {
+    requestAnimationFrame(() => {
+      captureAndSendThumbnail();
+    });
   }, [presentation]);
   const [{ isOver }, drop] = useDrop({
     accept: 'Box',
@@ -159,15 +165,20 @@ function PresentationEditor () {
     navigate('/presto');
   };
 
-  const captureAndSendThumbnail = () => {
+  const captureAndSendThumbnail = useCallback(() => {
     const element = document.getElementById('element-to-capture');
     if (element) {
       html2canvas(element).then(canvas => {
         const imageData = canvas.toDataURL('image/png');
-        setPresentation(presentation => ({ ...presentation, thumbnail: imageData }));
+        if (presentation.thumbnail !== imageData) {
+          setPresentation(prevPresentation => ({
+            ...prevPresentation,
+            thumbnail: imageData
+          }));
+        }
       });
     }
-  };
+  }, [presentation]);
 
   const deleteSlide = () => {
     setPresentation(presentation => {
