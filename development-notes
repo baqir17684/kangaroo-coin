@@ -1,9 +1,3 @@
-<<<<<<< HEAD
-注：You are able to use and install any library that is available to install via npm install. 
-You MUST commit package.json changes.
-
-=======
->>>>>>> 4bbec80909b115853f004ebc2c3613fd757277b2
 1. 路由
 2. 响应式设计 {
     媒体查询：<600(手机), 600-900(平板), 大于901(桌面)
@@ -12,39 +6,6 @@ You MUST commit package.json changes.
 3. 用户界面用户体验 material-ui（不使用css文件）：
 4. 可访问性  Axe/WAVE
 5. 代码esLint
-
-<<<<<<< HEAD
-1. 项目规划和设计
-需求分析：明确应用的功能需求，如创建幻灯片、编辑内容、设计模板、分享和导出等功能。
-设计原型：使用设计工具（尽管不在你的工具列表中，但推荐如Figma或Sketch）来设计应用的UI和UX。考虑创建一个设计系统，以便在Material-UI组件基础上进行定制。
-技术选型：确认使用React作为主框架，React-Bootstrap和Material-UI用于UI组件，Axe进行无障碍性检查，以及ESLint确保代码质量。
-2. 环境搭建
-项目初始化：使用Create React App（CRA）初始化项目基础结构，以快速启动开发环境。
-引入依赖：安装React-Bootstrap、Material-UI、Axe for Web（可能作为Chrome扩展）和ESLint的NPM包。
-配置ESLint：配置ESLint规则，确保团队成员遵循相同的代码风格和最佳实践。
-3. 开发阶段
-组件开发：按照设计原型，使用React-Bootstrap和Material-UI组件构建应用的UI组件。可能需要对Material-UI主题进行定制，以匹配设计原型的视觉风格。
-功能实现：开发应用的核心功能，如幻灯片的创建、编辑、保存和预览。使用React的状态管理来处理应用状态。
-无障碍性（A11Y）：利用Axe检查无障碍性问题，并根据其反馈修改代码，确保应用对所有用户友好。
-响应式设计：利用React-Bootstrap的网格系统和Material-UI的响应式工具，确保应用在不同设备上的良好显示。
-4. 测试
-单元测试：编写单元测试，验证单个组件和函数的行为。
-集成测试：确保应用中的不同部分可以正常协同工作。
-性能测试：检查应用的加载时间和运行效率，必要时进行优化。
-无障碍性测试：使用Axe和其他无障碍性测试工具，确保应用满足无障碍性标准。
-5. 部署和维护
-构建和部署：使用Create React App提供的构建脚本生成生产环境代码，并部署到适当的服务器或静态网站托管服务。
-持续维护：根据用户反馈持续改进应用，添加新功能和修复发现的问题。
-6. 文档和协作
-编写文档：为应用编写开发文档和用户指南。
-代码审查：定期进行代码审查，以保持代码质量和一致性。
-团队协作：利用版本控制系统（如Git）和协作工具（如GitHub、Bitbucket）来促进团队协作。
-通过遵循这个开发流程，你可以系统地开发出一个功能齐全、用户友好且无障碍的幻灯片制作应用。
-
-
-
-=======
->>>>>>> 4bbec80909b115853f004ebc2c3613fd757277b2
 hint:
 1.字体："Heiti TC"
 2.颜色：人体三感知器官，对应蓝绿红，蓝色是最安全的颜色，绿色是最舒适的颜色，红色是最激烈的颜色，构成RGB三原色，对应xyz三个值
@@ -82,10 +43,6 @@ function turnHSLToRGB(h, s, l) {
   }
   return [Math.round((r + m) * 255), Math.round((g + m) * 255), Math.round((b + m) * 255)];
 } 
-<<<<<<< HEAD
-3.注意注明使用的template
-=======
->>>>>>> 4bbec80909b115853f004ebc2c3613fd757277b2
 
 
 4.路由：import React from 'react';
@@ -112,7 +69,6 @@ export default LoginPage;
 5.presto中，为了使得右侧presentation缩略图展示栏，每行的grid子项数根据grid container的宽度变化而不是根据屏幕宽度，
 使用useRef引用container元素，同时采用ResizeObserver监视useRef.current的变化，变化时触发回调函数handleResize，改变state量cols，进而控制子项。
 
-<<<<<<< HEAD
 6.使用js原生的触发器控制画布上元素的移动不太流畅，尝试使用react dnd, 部署代码=>useDrop左边第一个参数不能为空，不然会引起无限循环报错。
 const delta = monitor.getDifferenceFromInitialOffset();返回的是px，必须与paper盒子的宽高处理得到百分比，要得到百分比需要引用paper结点
 由于已经有个来自useDrop的ref，所以需要引入useCallback，将两个ref合并，传递给useDrop的ref，同时将其中一个ref传递给另一个ref，这样就可以在回调函数中使用paperRef.current
@@ -163,5 +119,3 @@ import { useCallback, useRef } from 'react';
     paperRef.current = node; // 将节点存储在 paperRef 中
   }, [drop]);
 ref={combinedRef}
-=======
->>>>>>> 4bbec80909b115853f004ebc2c3613fd757277b2
