@@ -223,7 +223,7 @@ export default function Presto () {
                     </nav>
                   </Box>
                   <Divider orientation="vertical" flexItem sx={{ my: 3 }} />
-                  <Grid container ref={containerRef} spacing={2} columns={{ xs: 60 }} sx={{ flex: 1, margin: 0, height: '100%', overflow: 'auto', padding: 3, pb: '40px' }}>
+                  <Grid container ref={containerRef} spacing={2} columns={{ xs: 60 }} sx={{ flex: 1, margin: 0, height: '100%', overflow: 'auto', padding: 3, pb: '40px', pr: '40px' }}>
                     {presentations.map(presentation => (
                       <Grid item data-testid="card-grid" xs={60 / cols} key={presentation.name} sx={{ maxHeight: '452px' }}>
                         <CardActionArea data-testid="card-actionArea" onDoubleClick={() => handleDoubleClick(presentation.presentationId)}
