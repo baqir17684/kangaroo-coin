@@ -146,9 +146,9 @@ export default function Presto () {
                             <PowerSettingsNewIcon />
                         </IconButton>
                         <Typography variant="h6" sx={{ flexGrow: 1, ml: 2 }}>
-                          Presto
+                          Kangaroo-coin
                         </Typography>
-                        <Button color="inherit" variant="contained" onClick={handleOpenModal}>New deck</Button>
+                        <Button color="inherit" variant="contained" onClick={handleOpenModal}>New transaction</Button>
                     </Toolbar>
                 </AppBar>
                 <NewPresentationModal
@@ -192,7 +192,7 @@ export default function Presto () {
                             <ListItemIcon>
                               <CircleIcon sx={{ }} />
                             </ListItemIcon>
-                            <ListItemText primary="All decks"/>
+                            <ListItemText primary="function 1"/>
                           </ListItemButton>
                         </ListItem>
                         <ListItem disablePadding>
@@ -200,7 +200,7 @@ export default function Presto () {
                             <ListItemIcon>
                               <CircleIcon sx={{ color: colors.red[500] }} />
                             </ListItemIcon>
-                            <ListItemText primary="Tag 2"/>
+                            <ListItemText primary="function 2"/>
                           </ListItemButton>
                         </ListItem>
                         <ListItem disablePadding>
@@ -208,7 +208,7 @@ export default function Presto () {
                             <ListItemIcon>
                               <CircleIcon sx={{ color: colors.orange[500] }} />
                             </ListItemIcon>
-                            <ListItemText primary="Tag 3"/>
+                            <ListItemText primary="function 3"/>
                           </ListItemButton>
                         </ListItem>
                         <ListItem disablePadding>
@@ -216,7 +216,7 @@ export default function Presto () {
                             <ListItemIcon>
                               <CircleIcon sx={{ color: colors.yellow[500] }} />
                             </ListItemIcon>
-                            <ListItemText primary="Tag 4"/>
+                            <ListItemText primary="function 4"/>
                           </ListItemButton>
                         </ListItem>
                       </List>
@@ -243,12 +243,12 @@ export default function Presto () {
                                 {presentation.description}
                               </Typography>
                               <Typography sx={{ mb: 1.5, fontSize: 10, fontFamily: 'Heiti TC' }} color="text.secondary" component="span">
-                                {presentation.slides.length === 1 ? '1 slide' : `${presentation.slides.length} slides`}
+                                {presentation.slides.length === 1 ? 'Coin' : `${presentation.slides.length} slides`}
                               </Typography>
                             </CardContent>
                             <CardActions data-testid="card-button">
-                              <Button size="small" onClick={() => handleDoubleClick(presentation.presentationId)}>Edit</Button>
-                              <Button size="small" onClick={() => handleDeleteClick(presentation.presentationId)}>Delete</Button>
+                              <Button size="small" onClick={() => handleDoubleClick(presentation.presentationId)}>Modify</Button>
+                              <Button size="small" onClick={() => handleDeleteClick(presentation.presentationId)}>Transaction</Button>
                             </CardActions>
                           </Card>
                         </CardActionArea>
