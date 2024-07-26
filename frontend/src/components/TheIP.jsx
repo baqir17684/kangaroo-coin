@@ -1,6 +1,7 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { AppBar, Toolbar, Typography, Button, Card, CardMedia, CardContent, Box, Container } from '@mui/material';
 import { styled } from '@mui/system';
+import WalletConnectModal from './WalletConnect';
 
 const StyledAppBar = styled(AppBar)({
   backgroundColor: 'white',
@@ -21,6 +22,7 @@ const CircleBackground = styled(Box)({
 });
 
 const TheIP = () => {
+  const [isModalOpen, setIsModalOpen] = useState(false);
   return (
     <Box sx={{ bgcolor: '#8080FF', minHeight: '100vh', position: 'relative' }}>
       <CircleBackground />
@@ -33,9 +35,10 @@ const TheIP = () => {
           <StyledButton color="inherit">Explore</StyledButton>
           <StyledButton color="inherit">Sell</StyledButton>
           <StyledButton color="inherit">Drops</StyledButton>
-          <StyledButton variant="outlined" color="inherit">
+          <StyledButton variant="outlined" color="inherit" onClick={() => setIsModalOpen(true)}>
             Connect wallet
           </StyledButton>
+          <WalletConnectModal open={isModalOpen} onClose={() => setIsModalOpen(false)} />
         </Toolbar>
       </StyledAppBar>
       <Container maxWidth="md" sx={{ mt: 8, display: 'flex', alignItems: 'center' }}>
