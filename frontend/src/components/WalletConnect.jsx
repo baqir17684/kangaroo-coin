@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import {
   Box,
   Typography,
@@ -53,12 +53,39 @@ const WalletIcon = styled('img')({
 });
 
 const walletOptions = [
-  { name: 'MetaMask', icon: '/api/placeholder/24/24' },
-  { name: 'Phantom', icon: '/api/placeholder/24/24' },
-  { name: 'Coinbase Wallet', icon: '/api/placeholder/24/24' },
+  { name: 'MetaMask', icon: 'metamask.png' },
+  { name: 'Phantom', icon: 'ph.png' },
+  { name: 'Coinbase Wallet', icon: 'coinbase.png' },
 ];
 
-const WalletConnectModal = ({ open, onClose }) => {
+const WalletConnectModal = ({ open, onClose, onConnect, setCheckModalOpen }) => {
+  const [connectionStatus, setConnectionStatus] = useState('');
+  const handleWalletConnection = async (walletName) => {
+    if (walletName !== 'MetaMask') {
+      setConnectionStatus(`${walletName} connection not implemented yet.`);
+      return;
+    }
+
+    if (typeof window.ethereum !== 'undefined') {
+      try {
+        await window.ethereum.request({ method: 'eth_requestAccounts' });
+        // 获取连接的账户
+        const accounts = await window.ethereum.request({ method: 'eth_accounts' });
+        if (accounts.length > 0) {
+          setConnectionStatus(`Connected to MetaMask. Account: ${accounts[0]}`);
+          onConnect(accounts[0]); // 通知父组件连接成功
+          setTimeout(() => { onClose(); setCheckModalOpen(true) }, 2000); // 2秒后关闭模态框
+        } else {
+          setConnectionStatus('No accounts found. Please make sure you are logged into MetaMask.');
+        }
+      } catch (error) {
+        console.error('Error connecting to MetaMask', error);
+        setConnectionStatus(`Error connecting to MetaMask: ${error.message}`);
+      }
+    } else {
+      setConnectionStatus('MetaMask not detected. Please install MetaMask extension.');
+    }
+  };
   return (
     <Modal open={open} onClose={onClose}>
       <ModalContent>
@@ -68,7 +95,7 @@ const WalletConnectModal = ({ open, onClose }) => {
         >
           <CloseIcon />
         </IconButton>
-        <GreenCircle>
+        <GreenCircle sx={{ mt: 2 }}>
           <Typography variant="h4" color="white">IP</Typography>
         </GreenCircle>
         <Typography variant="h6" color="white" align="center" gutterBottom>
@@ -76,7 +103,7 @@ const WalletConnectModal = ({ open, onClose }) => {
         </Typography>
         <List>
           {walletOptions.map((wallet, index) => (
-            <WalletOption key={index} button>
+            <WalletOption key={index} onClick={() => handleWalletConnection(wallet.name)}>
               <ListItemIcon>
                 <WalletIcon src={wallet.icon} alt={wallet.name} />
               </ListItemIcon>
@@ -89,13 +116,18 @@ const WalletConnectModal = ({ open, onClose }) => {
             </WalletOption>
           ))}
         </List>
+        {connectionStatus && (
+          <Typography color="white" align="center" sx={{ mt: 2 }}>
+            {connectionStatus}
+          </Typography>
+        )}
         <Button fullWidth variant="text" sx={{ color: 'white', mt: 2 }}>
           More wallet options
         </Button>
         <Typography variant="body2" color="gray" align="center" sx={{ mt: 2 }}>
           OR
         </Typography>
-        <Box sx={{ display: 'flex', mt: 2 }}>
+        <Box sx={{ display: 'flex', m: 2 }}>
           <TextField
             fullWidth
             variant="outlined"
