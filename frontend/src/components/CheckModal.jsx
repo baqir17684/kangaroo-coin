@@ -7,6 +7,7 @@ import {
   Button,
   IconButton,
   Input,
+  CircularProgress,
 } from '@mui/material';
 import CloseIcon from '@mui/icons-material/Close';
 import CloudUploadIcon from '@mui/icons-material/CloudUpload';
@@ -26,6 +27,8 @@ const modalStyle = {
 const CheckModal = ({ open, onClose }) => {
   const [name, setName] = useState('');
   const [file, setFile] = useState(null);
+  const [isLoading, setIsLoading] = useState(false);
+  const [uploadResult, setUploadResult] = useState(null);
 
   const handleNameChange = (event) => {
     setName(event.target.value);
@@ -41,12 +44,40 @@ const CheckModal = ({ open, onClose }) => {
     }
   };
 
-  const handleSubmit = () => {
+  const handleSubmit = async () => {
     if (name && file) {
-      console.log('Name:', name);
-      console.log('File:', file);
-      // Here you would typically send the data to a server
-      onClose();
+      setIsLoading(true);
+      setUploadResult(null);
+
+      const formData = new FormData();
+      formData.append('file', file);
+      formData.append('name', name);
+
+      try {
+        const response = await fetch('http://localhost:5000/upload_pdf', {
+          method: 'POST',
+          body: formData,
+        });
+
+        const data = await response.json();
+
+        if (response.ok) {
+          setUploadResult({
+            success: true,
+            message: `File uploaded successfully. IPFS hash: ${data.ipfs_hash}`,
+          });
+        } else {
+          throw new Error(data.error || 'Upload failed');
+        }
+      } catch (error) {
+        console.error('Upload error:', error);
+        setUploadResult({
+          success: false,
+          message: `Upload failed: ${error.message}`,
+        });
+      } finally {
+        setIsLoading(false);
+      }
     } else {
       alert('Please enter a name and upload a PDF file');
     }
@@ -72,8 +103,8 @@ const CheckModal = ({ open, onClose }) => {
         >
           <CloseIcon />
         </IconButton>
-        <Typography id="check-modal-title" variant="h6" component="h2" gutterBottom >
-          Upload PDF and Enter Name
+        <Typography id="check-modal-title" variant="h6" component="h2" gutterBottom>
+          Upload PDF and Enter Name to Verify
         </Typography>
         <TextField
           fullWidth
@@ -112,9 +143,19 @@ const CheckModal = ({ open, onClose }) => {
           onClick={handleSubmit}
           fullWidth
           sx={{ mt: 2 }}
+          disabled={isLoading}
         >
-          Submit
+          {isLoading ? <CircularProgress size={24} /> : 'Verify'}
         </Button>
+        {uploadResult && (
+          <Typography
+            variant="body2"
+            color={uploadResult.success ? 'success.main' : 'error.main'}
+            sx={{ mt: 2 }}
+          >
+            {uploadResult.message}
+          </Typography>
+        )}
       </Box>
     </Modal>
   );
