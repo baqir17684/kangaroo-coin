@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import {
   Box,
   Container,
@@ -7,11 +7,21 @@ import {
   Card,
   CardContent,
   Grid,
+  Dialog,
+  DialogTitle,
+  DialogContent,
+  DialogActions,
 } from '@mui/material';
 import { styled } from '@mui/system';
+import CheckCircleOutlineIcon from '@mui/icons-material/CheckCircleOutline';
 import AddCircleOutlineIcon from '@mui/icons-material/AddCircleOutline';
 import AccountBalanceIcon from '@mui/icons-material/AccountBalance';
 import ShoppingCartIcon from '@mui/icons-material/ShoppingCart';
+import detectEthereumProvider from '@metamask/detect-provider';
+import Web3 from 'web3';
+import contractABI from './YourContractABI.json';
+import MintModal from './MintModal';
+import StakeModal from './StakeModal';
 
 const StyledCard = styled(Card)(({ theme }) => ({
   height: '100%',
@@ -24,14 +34,69 @@ const StyledCard = styled(Card)(({ theme }) => ({
   },
 }));
 
+const StyledDialog = styled(Dialog)(({ theme }) => ({
+  '& .MuiDialog-paper': {
+    borderRadius: 15,
+    padding: theme.spacing(2),
+    background: 'linear-gradient(45deg, #4CAF50 30%, #45a049 90%)',
+    color: 'white',
+  },
+}));
+
 const StyledButton = styled(Button)(({ theme }) => ({
   marginTop: theme.spacing(2),
 }));
 
 const CreatePage = () => {
-  const handleMint = () => {
-    console.log('Mint function called');
-    // 这里将来会实现与智能合约的交互
+  const [isMintModalOpen, setIsMintModalOpen] = React.useState(false);
+  const [isStakeModalOpen, setIsStakeModalOpen] = React.useState(false);
+
+  const [account, setAccount] = useState('');
+  const [mintedTokenId, setMintedTokenId] = useState('');
+  const [isDialogOpen, setIsDialogOpen] = useState(false);
+
+  useEffect(() => {
+    const loadWeb3 = async () => {
+      const provider = await detectEthereumProvider();
+      if (provider) {
+        await provider.request({ method: 'eth_requestAccounts' });
+        const web3 = new Web3(provider);
+        const accounts = await web3.eth.getAccounts();
+        setAccount(accounts[0]);
+      } else {
+        console.error('Please install MetaMask!');
+      }
+    };
+    loadWeb3();
+  }, []);
+  const handleMint = async (parentNftName, tokenType) => {
+    const provider = await detectEthereumProvider();
+    if (provider) {
+      const web3 = new Web3(provider);
+      const contractAddress = '0xA7fBA89310dc3BA4d81fE22aDb297d404e36eb4C'; // 你的合约地址
+      const contract = new web3.eth.Contract(contractABI, contractAddress);
+
+      try {
+        const receipt = await contract.methods
+          .mintToken(parentNftName, tokenType) // 使用父NFT名称和类型
+          .send({ from: account });
+        const tokenIdEvent = receipt.events.Minted.returnValues.tokenId;
+        let NFTInfo = localStorage.getItem('NFTInfo');
+        if (NFTInfo) {
+          NFTInfo = JSON.parse(NFTInfo);
+          NFTInfo.push({ tokenId: tokenIdEvent, parentNftName, tokenType });
+          localStorage.setItem('NFTInfo', JSON.stringify(NFTInfo));
+        } else {
+          NFTInfo = [{ tokenId: tokenIdEvent, parentNftName, tokenType }];
+          localStorage.setItem('NFTInfo', JSON.stringify(NFTInfo));
+        }
+        setIsMintModalOpen(false);
+        setMintedTokenId(tokenIdEvent);
+        setIsDialogOpen(true);
+      } catch (error) {
+        console.error('Error minting NFT:', error);
+      }
+    }
   };
 
   const handleStake = () => {
@@ -58,6 +123,8 @@ const CreatePage = () => {
                 <Typography gutterBottom variant="h5" component="div">
                   Mint
                 </Typography>
+                <MintModal open={isMintModalOpen} onClose={() => setIsMintModalOpen(true)} handleMint={handleMint} />
+                <StakeModal open={isStakeModalOpen} onClose={() => setIsStakeModalOpen(false)} handleStake={handleStake} />
                 <Typography variant="body2" color="text.secondary">
                   Create new tokens and add them to the blockchain. Minting is the process of generating new cryptocurrencies or tokens.
                 </Typography>
@@ -66,12 +133,35 @@ const CreatePage = () => {
                 <StyledButton
                   variant="contained"
                   fullWidth
-                  onClick={handleMint}
+                  onClick={() => setIsMintModalOpen(true)}
                   startIcon={<AddCircleOutlineIcon />}
                 >
                   Mint Tokens
                 </StyledButton>
               </Box>
+              <StyledDialog
+                open={isDialogOpen}
+                onClose={() => setIsDialogOpen(false)}
+                aria-labelledby="alert-dialog-title"
+                aria-describedby="alert-dialog-description"
+              >
+                <DialogTitle id="alert-dialog-title">
+                  <Box display="flex" alignItems="center">
+                    <CheckCircleOutlineIcon fontSize="large" style={{ marginRight: '10px' }} />
+                    <Typography variant="h5">Mint Success</Typography>
+                  </Box>
+                </DialogTitle>
+                <DialogContent>
+                  <Typography id="alert-dialog-description">
+                    Your NFT has been successfully minted. You can now view the contract: 0xA7fBA89310dc3BA4d81fE22aDb297d404e36eb4C and NFT ID: {mintedTokenId} to import the NFT in your wallet.
+                  </Typography>
+                </DialogContent>
+                <DialogActions>
+                  <StyledButton onClick={() => setIsDialogOpen(false)} autoFocus>
+                    Close
+                  </StyledButton>
+                </DialogActions>
+              </StyledDialog>
             </StyledCard>
           </Grid>
           <Grid item xs={12} md={4}>
@@ -89,7 +179,7 @@ const CreatePage = () => {
                 <StyledButton
                   variant="contained"
                   fullWidth
-                  onClick={handleStake}
+                  onClick={() => setIsStakeModalOpen(true)}
                   startIcon={<AccountBalanceIcon />}
                 >
                   Stake Tokens
