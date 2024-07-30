@@ -104,7 +104,13 @@ const MyNFTPage = () => {
     setSubNFTs(SubNFTINFO);
 
     const FragmentedNFTINFO = JSON.parse(localStorage.getItem('FragmentedNFTINFO') || '[]');
-    setFragmentNFTs(FragmentedNFTINFO);
+    const expandedFragmentNFTs = FragmentedNFTINFO.flatMap(nft =>
+      nft.fragmentIds.map(fragmentId => ({
+        ...nft,
+        fragmentId
+      }))
+    );
+    setFragmentNFTs(expandedFragmentNFTs);
   }, []);
 
   const copyToClipboard = (text) => {
@@ -120,7 +126,7 @@ const MyNFTPage = () => {
           {/* Parent NFT Column */}
           <Grid item xs={12} md={4}>
             <StyledColumn color="#FF6B6B">
-              <ColumnHeader variant="h5">Parent NFTs</ColumnHeader>
+              <ColumnHeader variant="h5">Original NFT</ColumnHeader>
               <Grid container spacing={2}>
                 {parentNFTs.map((nft, index) => (
                   <Grid item xs={12} key={index}>
@@ -138,7 +144,7 @@ const MyNFTPage = () => {
                           </IdContainer>
                         </Tooltip>
                         <CardText>
-                          Type: {nft.tokenType}
+                          Type: {nft.tokenType.toUpperCase()}
                         </CardText>
                       </CardContent>
                     </StyledCard>
@@ -151,7 +157,7 @@ const MyNFTPage = () => {
           {/* Sub NFT Column */}
           <Grid item xs={12} md={4}>
             <StyledColumn color="#4ECDC4">
-              <ColumnHeader variant="h5">Sub NFTs</ColumnHeader>
+              <ColumnHeader variant="h5">Licensing NFTs</ColumnHeader>
               <Grid container spacing={2}>
                 {subNFTs.map((subNFT, index) => (
                   <Grid item xs={12} key={index}>
@@ -197,29 +203,35 @@ const MyNFTPage = () => {
             <StyledColumn color="#45B7D1">
               <ColumnHeader variant="h5">Fragment NFTs</ColumnHeader>
               <Grid container spacing={2}>
-                {fragmentNFTs.map((fragmentNFT, index) => (
+                {fragmentNFTs.map((fragment, index) => (
                   <Grid item xs={12} key={index}>
                     <StyledCard>
                       <CardContent>
                         <CardTitle variant="h6">
-                          Fragmented NFT
+                          Fragment NFT
                         </CardTitle>
-                        <Tooltip title={`Original Sub NFT ID: ${fragmentNFT.tokenId}`} arrow placement="top">
-                          <CardText>
-                            Original Sub NFT ID: {fragmentNFT.tokenId.slice(0, 6)}...{fragmentNFT.tokenId.slice(-4)}
-                          </CardText>
+                        <Tooltip title={`Original Sub NFT ID: ${fragment.tokenId}`} arrow placement="top">
+                          <IdContainer>
+                            <IdText>Original Sub NFT ID: {fragment.tokenId.slice(0, 6)}...{fragment.tokenId.slice(-4)}</IdText>
+                            <CopyButton onClick={() => copyToClipboard(fragment.tokenId)}>
+                              <ContentCopyIcon fontSize="small" />
+                            </CopyButton>
+                          </IdContainer>
+                        </Tooltip>
+                        <Tooltip title={`Fragment ID: ${fragment.fragmentId}`} arrow placement="top">
+                          <IdContainer>
+                            <IdText>Fragment ID: {fragment.fragmentId.slice(0, 6)}...{fragment.fragmentId.slice(-4)}</IdText>
+                            <CopyButton onClick={() => copyToClipboard(fragment.fragmentId)}>
+                              <ContentCopyIcon fontSize="small" />
+                            </CopyButton>
+                          </IdContainer>
                         </Tooltip>
                         <CardText>
-                          Fragment Count: {fragmentNFT.fragmentCount}
+                          Total Fragments: {fragment.fragmentCount}
                         </CardText>
-                        <Tooltip title={`Fragment IDs: ${fragmentNFT.fragmentIds.join(', ')}`} arrow placement="top">
+                        <Tooltip title={`Recipient: ${fragment.toAddress}`} arrow placement="top">
                           <CardText>
-                            Fragment IDs: {fragmentNFT.fragmentIds.length > 0 ? `${fragmentNFT.fragmentIds[0].slice(0, 6)}...${fragmentNFT.fragmentIds[0].slice(-4)}, ...` : 'N/A'}
-                          </CardText>
-                        </Tooltip>
-                        <Tooltip title={`To Address: ${fragmentNFT.toAddress}`} arrow placement="top">
-                          <CardText>
-                            Recipient: {fragmentNFT.toAddress.slice(0, 6)}...{fragmentNFT.toAddress.slice(-4)}
+                            Recipient: {fragment.toAddress.slice(0, 6)}...{fragment.toAddress.slice(-4)}
                           </CardText>
                         </Tooltip>
                       </CardContent>

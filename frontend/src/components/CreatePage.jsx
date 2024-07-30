@@ -81,7 +81,7 @@ const CreatePage = () => {
   const handleMint = async (parentNftName, tokenType) => {
     if (provider) {
       const web3 = new Web3(provider);
-      const contractAddress = '0x68051fDB0394b45847B9c3c03bA98A813b36A843'; // 你的合约地址
+      const contractAddress = '0x480D14391524e0DFD8f7fEad6deE9ebb96ABBa3B'; // 你的合约地址
       const contract = new web3.eth.Contract(contractABI, contractAddress);
 
       try {
@@ -112,7 +112,7 @@ const CreatePage = () => {
     if (provider) {
       try {
         const web3 = new Web3(provider);
-        const contractAddress = '0x68051fDB0394b45847B9c3c03bA98A813b36A843'; // NftGenerate 合约地址
+        const contractAddress = '0x480D14391524e0DFD8f7fEad6deE9ebb96ABBa3B'; // NftGenerate 合约地址
         const contract = new web3.eth.Contract(NftGenerateABI, contractAddress);
 
         const receipt = await contract.methods
@@ -149,7 +149,7 @@ const CreatePage = () => {
     if (provider) {
       try {
         const web3 = new Web3(provider);
-        const contractAddress = '0x1E6A5dEF0BD93bC3f4842c39bB43845a11A16428'; // FractionalizeNFT 合约地址
+        const contractAddress = '0xE8Ed3De705aE55A094E0CF685F92A71Bf26bd536'; // FractionalizeNFT 合约地址
         const contract = new web3.eth.Contract(
           FractionalizeNFTABI,
           contractAddress
@@ -229,7 +229,7 @@ const CreatePage = () => {
                 </DialogTitle>
                 <DialogContent>
                   <Typography id="alert-dialog-description">
-                    Your NFT has been successfully minted. You can now view the contract: 0x68051fDB0394b45847B9c3c03bA98A813b36A843 and NFT ID: {mintedTokenId} to import the NFT in your wallet.
+                    Your NFT has been successfully minted. You can now view the contract: 0x480D14391524e0DFD8f7fEad6deE9ebb96ABBa3B and NFT ID: {mintedTokenId} to import the NFT in your wallet.
                   </Typography>
                 </DialogContent>
                 <DialogActions>

@@ -69,7 +69,7 @@ const LoadingButton = styled(Button)({
 
 const MintModal = ({ open, onClose, handleMint }) => {
   const [parentNftName, setParentNftName] = useState('');
-  const [tokenType, setTokenType] = useState('CopyRight');
+  const [tokenType, setTokenType] = useState('Copyright');
   const [isLoading, setIsLoading] = useState(false);
 
   const onSubmit = () => {
