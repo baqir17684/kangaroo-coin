@@ -89,6 +89,7 @@ const CreatePage = () => {
           .mintToken(parentNftName, tokenType) // 使用父NFT名称和类型
           .send({ from: account });
         const tokenIdEvent = receipt.events.Minted.returnValues.tokenId;
+        console.log('NFT minted with Token ID:', tokenIdEvent);
         let NFTInfo = localStorage.getItem('NFTOriginalInfo');
         if (NFTInfo) {
           NFTInfo = JSON.parse(NFTInfo);
