@@ -81,14 +81,14 @@ const CreatePage = () => {
           .mintToken(parentNftName, tokenType) // 使用父NFT名称和类型
           .send({ from: account });
         const tokenIdEvent = receipt.events.Minted.returnValues.tokenId;
-        let NFTInfo = localStorage.getItem('NFTInfo');
+        let NFTInfo = localStorage.getItem('NFTOriginalInfo');
         if (NFTInfo) {
           NFTInfo = JSON.parse(NFTInfo);
           NFTInfo.push({ tokenId: tokenIdEvent, parentNftName, tokenType });
-          localStorage.setItem('NFTInfo', JSON.stringify(NFTInfo));
+          localStorage.setItem('NFTOriginalInfo', JSON.stringify(NFTInfo));
         } else {
           NFTInfo = [{ tokenId: tokenIdEvent, parentNftName, tokenType }];
-          localStorage.setItem('NFTInfo', JSON.stringify(NFTInfo));
+          localStorage.setItem('NFTOriginalInfo', JSON.stringify(NFTInfo));
         }
         setIsMintModalOpen(false);
         setMintedTokenId(tokenIdEvent);
@@ -123,10 +123,10 @@ const CreatePage = () => {
                 <Typography gutterBottom variant="h5" component="div">
                   Mint
                 </Typography>
-                <MintModal open={isMintModalOpen} onClose={() => setIsMintModalOpen(true)} handleMint={handleMint} />
+                <MintModal open={isMintModalOpen} onClose={() => setIsMintModalOpen(false)} handleMint={handleMint} />
                 <StakeModal open={isStakeModalOpen} onClose={() => setIsStakeModalOpen(false)} handleStake={handleStake} />
                 <Typography variant="body2" color="text.secondary">
-                  Create new tokens and add them to the blockchain. Minting is the process of generating new cryptocurrencies or tokens.
+                  Create new NFT and add them to the blockchain. Minting is the process of generating new cryptocurrencies.
                 </Typography>
               </CardContent>
               <Box sx={{ p: 2 }}>
@@ -136,7 +136,7 @@ const CreatePage = () => {
                   onClick={() => setIsMintModalOpen(true)}
                   startIcon={<AddCircleOutlineIcon />}
                 >
-                  Mint Tokens
+                  Mint
                 </StyledButton>
               </Box>
               <StyledDialog
@@ -172,7 +172,7 @@ const CreatePage = () => {
                   Stake
                 </Typography>
                 <Typography variant="body2" color="text.secondary">
-                  Lock up your tokens to support network operations and earn rewards. Staking helps secure the network and can provide passive income.
+                  Generating time-sensitive subNFTs through stacking and licensing.
                 </Typography>
               </CardContent>
               <Box sx={{ p: 2 }}>
@@ -182,7 +182,7 @@ const CreatePage = () => {
                   onClick={() => setIsStakeModalOpen(true)}
                   startIcon={<AccountBalanceIcon />}
                 >
-                  Stake Tokens
+                  Staking and licensing
                 </StyledButton>
               </Box>
             </StyledCard>
@@ -192,10 +192,10 @@ const CreatePage = () => {
               <CardContent>
                 <ShoppingCartIcon sx={{ fontSize: 48, color: 'primary.main', mb: 2 }} />
                 <Typography gutterBottom variant="h5" component="div">
-                  Create Product
+                  fragmentation
                 </Typography>
                 <Typography variant="body2" color="text.secondary">
-                  Design and launch new digital products or services on the blockchain. This could include NFTs, digital assets, or tokenized real-world items.
+                  Fragmented subNFTs available for product use.
                 </Typography>
               </CardContent>
               <Box sx={{ p: 2 }}>
@@ -205,7 +205,7 @@ const CreatePage = () => {
                   onClick={handleCreateProduct}
                   startIcon={<ShoppingCartIcon />}
                 >
-                  Create Product
+                  fragmentation
                 </StyledButton>
               </Box>
             </StyledCard>

@@ -9,7 +9,8 @@ import {
   MenuItem,
   Button,
   Box,
-  Typography
+  Typography,
+  CircularProgress
 } from '@mui/material';
 import { styled } from '@mui/system';
 import { motion, AnimatePresence } from 'framer-motion';
@@ -57,13 +58,23 @@ const StyledSelect = styled(Select)({
   },
 });
 
+const LoadingButton = styled(Button)({
+  background: 'white',
+  color: '#FE6B8B',
+  '&:disabled': {
+    background: 'rgba(255, 255, 255, 0.7)',
+    color: '#FE6B8B',
+  },
+});
+
 const MintModal = ({ open, onClose, handleMint }) => {
   const [parentNftName, setParentNftName] = useState('');
   const [tokenType, setTokenType] = useState('CopyRight');
+  const [isLoading, setIsLoading] = useState(false);
 
   const onSubmit = () => {
+    setIsLoading(true);
     handleMint(parentNftName, tokenType);
-    onClose();
   };
 
   return (
@@ -114,16 +125,13 @@ const MintModal = ({ open, onClose, handleMint }) => {
           </DialogContent>
           <DialogActions>
             <Button onClick={onClose} style={{ color: 'white' }}>Cancel</Button>
-            <Button
+            <LoadingButton
               onClick={onSubmit}
               variant="contained"
-              style={{
-                background: 'white',
-                color: '#FE6B8B'
-              }}
+              disabled={isLoading}
             >
-              Mint
-            </Button>
+              {isLoading ? <CircularProgress size={24} /> : 'Mint'}
+            </LoadingButton>
           </DialogActions>
         </StyledDialog>
       )}

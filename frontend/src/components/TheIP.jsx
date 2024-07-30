@@ -4,6 +4,7 @@ import { styled } from '@mui/system';
 import WalletConnectModal from './WalletConnect';
 import CheckModal from './CheckModal';
 import CreatePage from './CreatePage';
+import MyNFTPage from './MyNFTPage';
 
 const StyledAppBar = styled(AppBar)({
   backgroundColor: 'black',
@@ -55,7 +56,7 @@ const TheIP = () => {
           </Typography>
           <StyledButton color="inherit" onClick={() => setSubPage('home')}>Home</StyledButton>
           <StyledButton color="inherit" onClick={() => setSubPage('create')}>Create</StyledButton>
-          <StyledButton color="inherit">Sell</StyledButton>
+          <StyledButton color="inherit" onClick={() => setSubPage('myNFT')}>My NFT</StyledButton>
           <StyledButton color="inherit">Drops</StyledButton>
           {connectedAccount
             ? (
@@ -113,6 +114,8 @@ const subPages = (state) => {
       )
     case 'create':
       return <CreatePage />;
+    case 'myNFT':
+      return <MyNFTPage />;
   }
 }
 export default TheIP;
