@@ -5,6 +5,7 @@ import WalletConnectModal from './WalletConnect';
 import CheckModal from './CheckModal';
 import CreatePage from './CreatePage';
 import MyNFTPage from './MyNFTPage';
+import CompanyInfo from './CompanyInfo';
 
 const StyledAppBar = styled(AppBar)({
   backgroundColor: 'black',
@@ -14,6 +15,7 @@ const StyledAppBar = styled(AppBar)({
 const StyledButton = styled(Button)({
   textTransform: 'none',
   marginLeft: '8px',
+  fontSize: '16px',
 });
 
 const CircleBackground = styled(Box)({
@@ -57,7 +59,7 @@ const TheIP = () => {
           <StyledButton color="inherit" onClick={() => setSubPage('home')}>Home</StyledButton>
           <StyledButton color="inherit" onClick={() => setSubPage('create')}>Create</StyledButton>
           <StyledButton color="inherit" onClick={() => setSubPage('myNFT')}>My NFT</StyledButton>
-          <StyledButton color="inherit">Drops</StyledButton>
+          <StyledButton color="inherit" sx={{ mr: '10px' }} onClick={() => setSubPage('company')}>CompanyInfo</StyledButton>
           {connectedAccount
             ? (
             <Box sx={{ display: 'flex', alignItems: 'center' }}>
@@ -116,6 +118,8 @@ const subPages = (state) => {
       return <CreatePage />;
     case 'myNFT':
       return <MyNFTPage />;
+    case 'company':
+      return <CompanyInfo />;
   }
 }
 export default TheIP;

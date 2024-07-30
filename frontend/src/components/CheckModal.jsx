@@ -78,6 +78,23 @@ const CheckModal = ({ open, onClose }) => {
       } finally {
         setIsLoading(false);
       }
+      // get company info
+      try {
+        const response = await fetch('http://127.0.0.1:5000/company-info', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify({ company_name: name })
+        });
+        if (response.ok) {
+          const data = await response.json();
+          console.log(data);
+          localStorage.setItem('companyInfo', JSON.stringify(data));
+        }
+      } catch (err) {
+        console.error('Error fetching company info:', err);
+      }
     } else {
       alert('Please enter a name and upload a PDF file');
     }
@@ -104,11 +121,11 @@ const CheckModal = ({ open, onClose }) => {
           <CloseIcon />
         </IconButton>
         <Typography id="check-modal-title" variant="h6" component="h2" gutterBottom>
-          Upload PDF and Enter Name to Verify
+          Upload the required PDF and enter the company name for verification
         </Typography>
         <TextField
           fullWidth
-          label="Name"
+          label="Company Name"
           variant="outlined"
           value={name}
           onChange={handleNameChange}
