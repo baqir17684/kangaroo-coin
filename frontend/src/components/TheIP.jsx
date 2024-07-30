@@ -1,11 +1,12 @@
 import React, { useState } from 'react';
-import { AppBar, Toolbar, Typography, Button, Card, CardMedia, CardContent, Box, Container, Avatar } from '@mui/material';
+import { AppBar, Toolbar, Typography, Button, Box, Avatar } from '@mui/material';
 import { styled } from '@mui/system';
 import WalletConnectModal from './WalletConnect';
 import CheckModal from './CheckModal';
 import CreatePage from './CreatePage';
 import MyNFTPage from './MyNFTPage';
 import CompanyInfo from './CompanyInfo';
+import HomePage from './HomePage';
 
 const StyledAppBar = styled(AppBar)({
   backgroundColor: 'black',
@@ -84,36 +85,7 @@ const TheIP = () => {
 const subPages = (state) => {
   switch (state) {
     case 'home':
-      return (
-        <Container maxWidth="md" sx={{ mb: 6, display: 'flex', alignItems: 'center', height: '100%', flexGrow: 1 }}>
-        <Card sx={{ display: 'flex', bgcolor: 'transparent', boxShadow: 'none', flex: '1 0 auto' }}>
-          <CardMedia
-            component="img"
-            sx={{ width: 400, height: 400, borderRadius: 4 }}
-            image="Mcat.jpg"
-            alt="Mcat"
-          />
-          <Box sx={{ display: 'flex', flexDirection: 'column', ml: 4, mt: 8 }}>
-            <CardContent sx={{ flex: '1 0 auto' }}>
-              <Typography component="div" variant="h3" color="white">
-                Mcat
-              </Typography>
-              <Typography variant="subtitle1" color="white" component="div">
-                A collection of 33 cute onchain cats rolling around on Base.
-              </Typography>
-              <Box sx={{ mt: 2 }}>
-                <Button variant="contained" sx={{ mr: 2, bgcolor: 'white', color: 'black' }}>
-                  View Mcat
-                </Button>
-                <Button variant="outlined" sx={{ color: 'white', borderColor: 'white' }}>
-                  Follow on X
-                </Button>
-              </Box>
-            </CardContent>
-          </Box>
-        </Card>
-      </Container>
-      )
+      return <HomePage />;
     case 'create':
       return <CreatePage />;
     case 'myNFT':

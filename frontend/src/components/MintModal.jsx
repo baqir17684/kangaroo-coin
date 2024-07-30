@@ -77,6 +77,11 @@ const MintModal = ({ open, onClose, handleMint }) => {
     handleMint(parentNftName, tokenType);
   };
 
+  const handleCancel = () => {
+    onClose();
+    setIsLoading(false);
+  };
+
   return (
     <AnimatePresence>
       {open && (
@@ -124,7 +129,7 @@ const MintModal = ({ open, onClose, handleMint }) => {
             </Box>
           </DialogContent>
           <DialogActions>
-            <Button onClick={onClose} style={{ color: 'white' }}>Cancel</Button>
+            <Button onClick={handleCancel} style={{ color: 'white' }}>Cancel</Button>
             <LoadingButton
               onClick={onSubmit}
               variant="contained"

@@ -1,22 +1,28 @@
 import detectEthereumProvider from "@metamask/detect-provider";
 import React, { useEffect, useState } from "react";
 import Web3 from "web3";
-import contractABI from "./contracts/YourContractABI.json";
+import FractionalizeNFTABI from "./contracts/FractionalizeNFTABI.json";
+import NftGenerateABI from "./contracts/NftGenerateABI.json";
 
 const MintNFT = () => {
   const [account, setAccount] = useState("");
+  const [provider, setProvider] = useState(null);
   const [toAddress, setToAddress] = useState("");
   const [parentNftName, setParentNftName] = useState("");
   const [tokenType, setTokenType] = useState("CopyRight");
-  const [quantity, setQuantity] = useState(1);
   const [tokenId, setTokenId] = useState(""); // 用于质押的P-NFT Token ID
   const [duration, setDuration] = useState(1); // S-NFT的持续时间（天数）
   const [sNftType, setSNftType] = useState(""); // S-NFT的类型
+  const [mintedTokenId, setMintedTokenId] = useState(""); // 存储铸造的Token ID
+  const [subNftTokenId, setSubNftTokenId] = useState(""); // 用于分割的S-NFT Token ID
+  const [fragmentCount, setFragmentCount] = useState(1); // 分割成的碎片数量
+  const [fractionalizedIds, setFractionalizedIds] = useState([]); // 存储碎片化生成的ID
 
   useEffect(() => {
-    const loadWeb3 = async () => {
+    const loadProvider = async () => {
       const provider = await detectEthereumProvider();
       if (provider) {
+        setProvider(provider);
         await provider.request({ method: "eth_requestAccounts" });
         const web3 = new Web3(provider);
         const accounts = await web3.eth.getAccounts();
@@ -25,42 +31,84 @@ const MintNFT = () => {
         console.error("Please install MetaMask!");
       }
     };
-    loadWeb3();
+    loadProvider();
   }, []);
 
   const mintNFT = async () => {
-    const provider = await detectEthereumProvider();
     if (provider) {
-      const web3 = new Web3(provider);
-      const contractAddress = "0xA7fBA89310dc3BA4d81fE22aDb297d404e36eb4C"; // 你的合约地址
-      const contract = new web3.eth.Contract(contractABI, contractAddress);
-
       try {
-        await contract.methods
-          .mintToken(parentNftName, tokenType) // 使用父NFT名称和类型
+        const web3 = new Web3(provider);
+        const contractAddress = "0x68051fDB0394b45847B9c3c03bA98A813b36A843"; // NftGenerate 合约地址
+        const contract = new web3.eth.Contract(NftGenerateABI, contractAddress);
+
+        const receipt = await contract.methods
+          .mintToken(parentNftName, tokenType)
           .send({ from: account });
-        console.log("NFT minted successfully");
+
+        // 获取事件日志中Token ID
+        const tokenIdEvent = receipt.events.Minted.returnValues.tokenId;
+        setMintedTokenId(tokenIdEvent);
+        console.log("NFT minted successfully with Token ID:", tokenIdEvent);
       } catch (error) {
         console.error("Error minting NFT:", error);
       }
+    } else {
+      console.error("No Ethereum provider found. Please install MetaMask.");
     }
   };
 
   const stakeNFT = async () => {
-    const provider = await detectEthereumProvider();
     if (provider) {
-      const web3 = new Web3(provider);
-      const contractAddress = "0xA7fBA89310dc3BA4d81fE22aDb297d404e36eb4C"; // 你的合约地址
-      const contract = new web3.eth.Contract(contractABI, contractAddress);
-
       try {
-        await contract.methods
-          .SubNftGenerate(tokenId, duration, sNftType, toAddress) // 使用质押的Token ID和其他参数
+        const web3 = new Web3(provider);
+        const contractAddress = "0x68051fDB0394b45847B9c3c03bA98A813b36A843"; // NftGenerate 合约地址
+        const contract = new web3.eth.Contract(NftGenerateABI, contractAddress);
+
+        const receipt = await contract.methods
+          .SubNftGenerate(tokenId, duration, sNftType, toAddress)
           .send({ from: account });
-        console.log("S-NFT staked and generated successfully");
+
+        // 从事件中提取生成的S-NFT的Token ID
+        const subNftMintedEvent = receipt.events.SubNftMinted;
+        if (subNftMintedEvent) {
+          const generatedTokenId = subNftMintedEvent.returnValues.tokenId;
+          setSubNftTokenId(generatedTokenId); // 设置S-NFT的Token ID
+          console.log("S-NFT generated with Token ID:", generatedTokenId);
+        }
       } catch (error) {
         console.error("Error staking NFT:", error);
       }
+    } else {
+      console.error("No Ethereum provider found. Please install MetaMask.");
+    }
+  };
+
+  const fractionalizeNFT = async () => {
+    if (provider) {
+      try {
+        const web3 = new Web3(provider);
+        const contractAddress = "0x1E6A5dEF0BD93bC3f4842c39bB43845a11A16428"; // FractionalizeNFT 合约地址
+        const contract = new web3.eth.Contract(
+          FractionalizeNFTABI,
+          contractAddress
+        );
+
+        const receipt = await contract.methods
+          .fractionalize(subNftTokenId, fragmentCount, toAddress)
+          .send({ from: account });
+
+        // 从事件中提取生成的碎片ID
+        const fractionalizedEvent = receipt.events.Fractionalized;
+        if (fractionalizedEvent) {
+          const fragmentIds = fractionalizedEvent.returnValues.fragmentIds;
+          setFractionalizedIds(fragmentIds); // 存储生成的碎片ID
+          console.log("NFT fractionalized successfully", fragmentIds);
+        }
+      } catch (error) {
+        console.error("Error fractionalizing NFT:", error);
+      }
+    } else {
+      console.error("No Ethereum provider found. Please install MetaMask.");
     }
   };
 
@@ -84,6 +132,11 @@ const MintNFT = () => {
         </select>
         <button onClick={mintNFT}>Mint</button>
       </div>
+      {mintedTokenId && (
+        <div>
+          <h3>Minted Token ID: {mintedTokenId}</h3>
+        </div>
+      )}
       <div>
         <h2>Stake Parent NFT to Generate Sub-NFT</h2>
         <input
@@ -112,6 +165,43 @@ const MintNFT = () => {
         />
         <button onClick={stakeNFT}>Stake & Generate Sub-NFT</button>
       </div>
+      {subNftTokenId && (
+        <div>
+          <h3>Generated Sub-NFT Token ID: {subNftTokenId}</h3>
+        </div>
+      )}
+      <div>
+        <h2>Fractionalize Sub-NFT</h2>
+        <input
+          type="text"
+          placeholder="Sub-NFT Token ID"
+          value={subNftTokenId}
+          onChange={(e) => setSubNftTokenId(e.target.value)}
+        />
+        <input
+          type="number"
+          placeholder="Fragment Count"
+          value={fragmentCount}
+          onChange={(e) => setFragmentCount(e.target.value)}
+        />
+        <input
+          type="text"
+          placeholder="Recipient Address"
+          value={toAddress}
+          onChange={(e) => setToAddress(e.target.value)}
+        />
+        <button onClick={fractionalizeNFT}>Fractionalize</button>
+      </div>
+      {fractionalizedIds.length > 0 && (
+        <div>
+          <h3>Fractionalized Token IDs:</h3>
+          <ul>
+            {fractionalizedIds.map((id, index) => (
+              <li key={index}>{id}</li>
+            ))}
+          </ul>
+        </div>
+      )}
     </div>
   );
 };

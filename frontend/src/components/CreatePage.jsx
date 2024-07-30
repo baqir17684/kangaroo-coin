@@ -22,6 +22,9 @@ import Web3 from 'web3';
 import contractABI from './YourContractABI.json';
 import MintModal from './MintModal';
 import StakeModal from './StakeModal';
+import FractionModal from './FractionModal';
+import FractionalizeNFTABI from './FractionalizeNFTABI.json';
+import NftGenerateABI from './NftGenerateABI.json';
 
 const StyledCard = styled(Card)(({ theme }) => ({
   height: '100%',
@@ -50,15 +53,21 @@ const StyledButton = styled(Button)(({ theme }) => ({
 const CreatePage = () => {
   const [isMintModalOpen, setIsMintModalOpen] = React.useState(false);
   const [isStakeModalOpen, setIsStakeModalOpen] = React.useState(false);
+  const [isFractionModalOpen, setIsFractionModalOpen] = React.useState(false);
 
   const [account, setAccount] = useState('');
   const [mintedTokenId, setMintedTokenId] = useState('');
-  const [isDialogOpen, setIsDialogOpen] = useState(false);
+  // const [subNftTokenId, setSubNftTokenId] = useState('');
+  const [isMintDialogOpen, setIsMintDialogOpen] = useState(false);
+  const [isStakeDialogOpen, setIsStakeDialogOpen] = useState(false);
+  const [isFractionDialogOpen, setIsFractionDialogOpen] = useState(false);
 
+  const [provider, setProvider] = useState(null);
   useEffect(() => {
     const loadWeb3 = async () => {
       const provider = await detectEthereumProvider();
       if (provider) {
+        setProvider(provider);
         await provider.request({ method: 'eth_requestAccounts' });
         const web3 = new Web3(provider);
         const accounts = await web3.eth.getAccounts();
@@ -70,10 +79,9 @@ const CreatePage = () => {
     loadWeb3();
   }, []);
   const handleMint = async (parentNftName, tokenType) => {
-    const provider = await detectEthereumProvider();
     if (provider) {
       const web3 = new Web3(provider);
-      const contractAddress = '0xA7fBA89310dc3BA4d81fE22aDb297d404e36eb4C'; // 你的合约地址
+      const contractAddress = '0x68051fDB0394b45847B9c3c03bA98A813b36A843'; // 你的合约地址
       const contract = new web3.eth.Contract(contractABI, contractAddress);
 
       try {
@@ -92,21 +100,87 @@ const CreatePage = () => {
         }
         setIsMintModalOpen(false);
         setMintedTokenId(tokenIdEvent);
-        setIsDialogOpen(true);
+        setIsMintDialogOpen(true);
       } catch (error) {
         console.error('Error minting NFT:', error);
       }
     }
   };
 
-  const handleStake = () => {
-    console.log('Stake function called');
-    // 这里将来会实现与智能合约的交互
+  const stakeNFT = async (tokenId, duration, sNftType, toAddress) => {
+    if (provider) {
+      try {
+        const web3 = new Web3(provider);
+        const contractAddress = '0x68051fDB0394b45847B9c3c03bA98A813b36A843'; // NftGenerate 合约地址
+        const contract = new web3.eth.Contract(NftGenerateABI, contractAddress);
+
+        const receipt = await contract.methods
+          .SubNftGenerate(tokenId, duration, sNftType, toAddress)
+          .send({ from: account });
+
+        // 从事件中提取生成的S-NFT的Token ID
+        const subNftMintedEvent = receipt.events.SubNftMinted;
+        if (subNftMintedEvent) {
+          const generatedTokenId = subNftMintedEvent.returnValues.tokenId;
+          // setSubNftTokenId(generatedTokenId); // 设置S-NFT的Token ID
+          let SubNFTINFO = localStorage.getItem('SubNFTINFO');
+          if (SubNFTINFO) {
+            SubNFTINFO = JSON.parse(SubNFTINFO);
+            SubNFTINFO.push({ tokenId: generatedTokenId, parentTokenId: tokenId, duration, sNftType, toAddress });
+            localStorage.setItem('SubNFTINFO', JSON.stringify(SubNFTINFO));
+          } else {
+            SubNFTINFO = [{ tokenId: generatedTokenId, parentTokenId: tokenId, duration, sNftType, toAddress }];
+            localStorage.setItem('SubNFTINFO', JSON.stringify(SubNFTINFO));
+          }
+          setIsStakeModalOpen(false);
+          setIsStakeDialogOpen(true);
+          console.log('S-NFT generated with Token ID:', generatedTokenId);
+        }
+      } catch (error) {
+        console.error('Error staking NFT:', error);
+      }
+    } else {
+      console.error('No Ethereum provider found. Please install MetaMask.');
+    }
   };
 
-  const handleCreateProduct = () => {
-    console.log('Create Product function called');
-    // 这里将来会实现与智能合约的交互
+  const fractionalizeNFT = async (subNftTokenId, fragmentCount, toAddress) => {
+    if (provider) {
+      try {
+        const web3 = new Web3(provider);
+        const contractAddress = '0x1E6A5dEF0BD93bC3f4842c39bB43845a11A16428'; // FractionalizeNFT 合约地址
+        const contract = new web3.eth.Contract(
+          FractionalizeNFTABI,
+          contractAddress
+        );
+
+        const receipt = await contract.methods
+          .fractionalize(subNftTokenId, fragmentCount, toAddress)
+          .send({ from: account });
+
+        // 从事件中提取生成的碎片ID
+        const fractionalizedEvent = receipt.events.Fractionalized;
+        if (fractionalizedEvent) {
+          const fragmentIds = fractionalizedEvent.returnValues.fragmentIds;
+          // setFractionalizedIds(fragmentIds); // 存储生成的碎片ID
+          let FragmentedNFTINFO = localStorage.getItem('FragmentedNFTINFO');
+          if (FragmentedNFTINFO) {
+            FragmentedNFTINFO = JSON.parse(FragmentedNFTINFO);
+            FragmentedNFTINFO.push({ tokenId: subNftTokenId, fragmentIds, toAddress, fragmentCount });
+            localStorage.setItem('FragmentedNFTINFO', JSON.stringify(FragmentedNFTINFO));
+          } else {
+            FragmentedNFTINFO = [{ tokenId: subNftTokenId, fragmentIds, toAddress, fragmentCount }];
+            localStorage.setItem('FragmentedNFTINFO', JSON.stringify(FragmentedNFTINFO));
+          }
+          setIsFractionModalOpen(false);
+          setIsFractionDialogOpen(true);
+        }
+      } catch (error) {
+        console.error('Error fractionalizing NFT:', error);
+      }
+    } else {
+      console.error('No Ethereum provider found. Please install MetaMask.');
+    }
   };
 
   return (
@@ -124,7 +198,8 @@ const CreatePage = () => {
                   Mint
                 </Typography>
                 <MintModal open={isMintModalOpen} onClose={() => setIsMintModalOpen(false)} handleMint={handleMint} />
-                <StakeModal open={isStakeModalOpen} onClose={() => setIsStakeModalOpen(false)} handleStake={handleStake} />
+                <StakeModal open={isStakeModalOpen} onClose={() => setIsStakeModalOpen(false)} handleStake={stakeNFT} />
+                <FractionModal open={isFractionModalOpen} onClose={() => setIsFractionModalOpen(false)} handleFraction={fractionalizeNFT} />
                 <Typography variant="body2" color="text.secondary">
                   Create new NFT and add them to the blockchain. Minting is the process of generating new cryptocurrencies.
                 </Typography>
@@ -139,9 +214,9 @@ const CreatePage = () => {
                   Mint
                 </StyledButton>
               </Box>
-              <StyledDialog
-                open={isDialogOpen}
-                onClose={() => setIsDialogOpen(false)}
+              <StyledDialog // Mint Dialog
+                open={isMintDialogOpen}
+                onClose={() => setIsMintDialogOpen(false)}
                 aria-labelledby="alert-dialog-title"
                 aria-describedby="alert-dialog-description"
               >
@@ -153,11 +228,57 @@ const CreatePage = () => {
                 </DialogTitle>
                 <DialogContent>
                   <Typography id="alert-dialog-description">
-                    Your NFT has been successfully minted. You can now view the contract: 0xA7fBA89310dc3BA4d81fE22aDb297d404e36eb4C and NFT ID: {mintedTokenId} to import the NFT in your wallet.
+                    Your NFT has been successfully minted. You can now view the contract: 0x68051fDB0394b45847B9c3c03bA98A813b36A843 and NFT ID: {mintedTokenId} to import the NFT in your wallet.
                   </Typography>
                 </DialogContent>
                 <DialogActions>
-                  <StyledButton onClick={() => setIsDialogOpen(false)} autoFocus>
+                  <StyledButton onClick={() => setIsMintDialogOpen(false)} autoFocus>
+                    Close
+                  </StyledButton>
+                </DialogActions>
+              </StyledDialog>
+              <StyledDialog // Stake Dialog
+                open={isStakeDialogOpen}
+                onClose={() => setIsStakeDialogOpen(false)}
+                aria-labelledby="alert-dialog-title"
+                aria-describedby="alert-dialog-description"
+              >
+                <DialogTitle id="alert-dialog-title">
+                  <Box display="flex" alignItems="center">
+                    <CheckCircleOutlineIcon fontSize="large" style={{ marginRight: '10px' }} />
+                    <Typography variant="h5">Stake Success</Typography>
+                  </Box>
+                </DialogTitle>
+                <DialogContent>
+                  <Typography id="alert-dialog-description">
+                    Your NFT has been successfully staked.
+                  </Typography>
+                </DialogContent>
+                <DialogActions>
+                  <StyledButton onClick={() => setIsStakeDialogOpen(false)} autoFocus>
+                    Close
+                  </StyledButton>
+                </DialogActions>
+              </StyledDialog>
+              <StyledDialog // Fraction Dialog
+                open={isFractionDialogOpen}
+                onClose={() => setIsFractionDialogOpen(false)}
+                aria-labelledby="alert-dialog-title"
+                aria-describedby="alert-dialog-description"
+              >
+                <DialogTitle id="alert-dialog-title">
+                  <Box display="flex" alignItems="center">
+                    <CheckCircleOutlineIcon fontSize="large" style={{ marginRight: '10px' }} />
+                    <Typography variant="h5">Fraction Success</Typography>
+                  </Box>
+                </DialogTitle>
+                <DialogContent>
+                  <Typography id="alert-dialog-description">
+                    Your SubNFT has been successfully fractionalized.
+                  </Typography>
+                </DialogContent>
+                <DialogActions>
+                  <StyledButton onClick={() => setIsFractionDialogOpen(false)} autoFocus>
                     Close
                   </StyledButton>
                 </DialogActions>
@@ -202,7 +323,7 @@ const CreatePage = () => {
                 <StyledButton
                   variant="contained"
                   fullWidth
-                  onClick={handleCreateProduct}
+                  onClick={() => setIsFractionModalOpen(true)}
                   startIcon={<ShoppingCartIcon />}
                 >
                   fragmentation

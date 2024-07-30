@@ -7,7 +7,8 @@ import {
   TextField,
   Button,
   Box,
-  Typography
+  Typography,
+  CircularProgress
 } from '@mui/material';
 import { styled } from '@mui/system';
 import { motion, AnimatePresence } from 'framer-motion';
@@ -16,7 +17,7 @@ const StyledDialog = styled(Dialog)(({ theme }) => ({
   '& .MuiDialog-paper': {
     borderRadius: 15,
     padding: theme.spacing(2),
-    background: 'linear-gradient(45deg, #2196F3 30%, #21CBF3 90%)',
+    background: 'linear-gradient(45deg, #6B46FE 30%, #53A9FF 90%)',
   },
 }));
 
@@ -42,15 +43,30 @@ const StyledTextField = styled(TextField)({
   label: { color: 'white' }
 });
 
-const StakeModal = ({ open, onClose, handleStake }) => {
+const LoadingButton = styled(Button)({
+  background: 'white',
+  color: '#6B46FE',
+  '&:disabled': {
+    background: 'rgba(255, 255, 255, 0.7)',
+    color: '#6B46FE',
+  },
+});
+
+const StakeNFTModal = ({ open, onClose, handleStake }) => {
   const [tokenId, setTokenId] = useState('');
   const [duration, setDuration] = useState('');
   const [sNftType, setSNftType] = useState('');
   const [toAddress, setToAddress] = useState('');
+  const [isLoading, setIsLoading] = useState(false);
 
   const onSubmit = () => {
+    setIsLoading(true);
     handleStake(tokenId, duration, sNftType, toAddress);
+  };
+
+  const handleCancel = () => {
     onClose();
+    setIsLoading(false);
   };
 
   return (
@@ -71,7 +87,7 @@ const StakeModal = ({ open, onClose, handleStake }) => {
         >
           <DialogTitle>
             <Typography variant="h4" component="div" style={{ color: 'white', fontWeight: 'bold' }}>
-              Stake Your NFT
+              Stake Parent NFT to Generate Sub-NFT
             </Typography>
           </DialogTitle>
           <DialogContent>
@@ -126,17 +142,14 @@ const StakeModal = ({ open, onClose, handleStake }) => {
             </Box>
           </DialogContent>
           <DialogActions>
-            <Button onClick={onClose} style={{ color: 'white' }}>Cancel</Button>
-            <Button
+            <Button onClick={handleCancel} style={{ color: 'white' }}>Cancel</Button>
+            <LoadingButton
               onClick={onSubmit}
               variant="contained"
-              style={{
-                background: 'white',
-                color: '#2196F3'
-              }}
+              disabled={isLoading}
             >
-              Stake
-            </Button>
+              {isLoading ? <CircularProgress size={24} /> : 'Stake & Generate Sub-NFT'}
+            </LoadingButton>
           </DialogActions>
         </StyledDialog>
       )}
@@ -144,4 +157,4 @@ const StakeModal = ({ open, onClose, handleStake }) => {
   );
 };
 
-export default StakeModal;
+export default StakeNFTModal;
