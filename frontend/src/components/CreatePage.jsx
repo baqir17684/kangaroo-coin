@@ -81,7 +81,7 @@ const CreatePage = () => {
   const handleMint = async (parentNftName, tokenType) => {
     if (provider) {
       const web3 = new Web3(provider);
-      const contractAddress = '0x480D14391524e0DFD8f7fEad6deE9ebb96ABBa3B'; // 你的合约地址
+      const contractAddress = '0x346f100365a184B480aeAeC5Be0164916C27E0be'; // 你的合约地址
       const contract = new web3.eth.Contract(contractABI, contractAddress);
 
       try {
@@ -112,7 +112,7 @@ const CreatePage = () => {
     if (provider) {
       try {
         const web3 = new Web3(provider);
-        const contractAddress = '0x480D14391524e0DFD8f7fEad6deE9ebb96ABBa3B'; // NftGenerate 合约地址
+        const contractAddress = '0x346f100365a184B480aeAeC5Be0164916C27E0be'; // NftGenerate 合约地址
         const contract = new web3.eth.Contract(NftGenerateABI, contractAddress);
 
         const receipt = await contract.methods
@@ -149,7 +149,7 @@ const CreatePage = () => {
     if (provider) {
       try {
         const web3 = new Web3(provider);
-        const contractAddress = '0xE8Ed3De705aE55A094E0CF685F92A71Bf26bd536'; // FractionalizeNFT 合约地址
+        const contractAddress = '0x0B479907E485341B4529b0293f1c12d1A5FEF834'; // FractionalizeNFT 合约地址
         const contract = new web3.eth.Contract(
           FractionalizeNFTABI,
           contractAddress
